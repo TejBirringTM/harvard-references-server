@@ -118,12 +118,15 @@ inline controllers::harvardReferences::ReferenceTypeHandler book = {
                 oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
             }
 
-            cout << oHtml.str() << endl;
+
             send_response(res, nlohmann::json({
-                {"string", "..."},
+                {"string", "Not implemented (yet)."},
                 {"html", oHtml.str()}
             }));
         }
 };
+
+
+
 
 #endif //HARVARD_REFERENCES_SERVER_BOOK_H

@@ -1,4 +1,4 @@
 add_library(
-        controllers
+        harvard-references-server-controllers
         harvard-references.cpp
         )

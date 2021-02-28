@@ -7,8 +7,6 @@ namespace html {
 
     const string em = "<em>";
     const string _em = "</em>";
-    const string sup = "<sup>";
-    const string _sup = "</sup>";
 
     const string str(const string& in) { return in; }
 
@@ -17,6 +15,9 @@ namespace html {
     }
 
     const string ord(const unsigned n) {
+        static string sup = "<sup>";
+        static string _sup = "</sup>";
+
         const unsigned j = n % 10;
         const unsigned k = n % 100;
 

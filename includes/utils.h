@@ -10,11 +10,11 @@
 
 inline void print_json(const nlohmann::json& json) {
     if (json.empty()) {
-        std::cout << "EMPTY!" << std::endl;
+        std::cout << "  JSON IS EMPTY!" << std::endl;
         return;
     }
     for (const auto& [key, val] : json.items()) {
-        std::cout << "key: " << key << ", value: " << val << std::endl;
+        std::cout << "  \"" << key << "\": \"" << val << "\"" << std::endl;
     }
 }
 
@@ -56,7 +56,9 @@ inline void sanitize_request(nlohmann::json& json) {
     static function<string(const string&)> sanitizeString =
             [](const string& input) -> string {
                 string output = regex_replace(input, rHtmlTags, "");
-                cout << "Sanitized '" << input << "' to '" << output << "'." << endl;
+                #ifdef SERVER_DEBUG
+                cout << "Sanitized: '" << input << "' -> '" << output << "'" << endl;
+                #endif
                 return output;
             };
 

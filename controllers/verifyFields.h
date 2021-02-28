@@ -12,7 +12,9 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
     using namespace std;
 
     for (const auto& field : fields) {
+        #ifdef SERVER_DEBUG
         cout << "   Verifying field: '" << field.name << "'" << endl;
+        #endif
         try {
             // try and fetch value from JSON req obj, will throw if doesn't exist
             const auto value = req.at(field.name);

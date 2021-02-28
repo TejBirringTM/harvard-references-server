@@ -146,7 +146,9 @@ void controllers::harvardReferences::respond(nlohmann::json& req, crow::response
 
         for (const auto& handler : handlers) {
             if (type == handler.type) {
-                cout << "Running handler for: " << type << endl;
+                #ifdef SERVER_DEBUG
+                cout << "Running handler for 'type': '" << type << "'" << endl;
+                #endif
                 handler.respond(req, res);
                 return;
             }

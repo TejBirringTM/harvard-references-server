@@ -1,12 +1,17 @@
 #include "includes/crow_all.h"
 #include "controllers/harvard-references.h"
 #include "includes/utils.h"
+#include "includes/global.h"
 
 int main(int nArgs, char* vectorArgs[]) {
     using namespace std;
     using namespace crow;
     SimpleApp app;
     using json = nlohmann::json;
+
+    #ifdef SERVER_DEBUG
+    cout << "RUNNING DEBUG VARIANT!" << endl;
+    #endif
 
     // define the route + allowed methods + main handler function
     CROW_ROUTE(app, "/api/v1.0").methods(HTTPMethod::GET)
@@ -27,8 +32,10 @@ int main(int nArgs, char* vectorArgs[]) {
                 if (j.empty())
                     send_error_response(res, 400, "Please submit (valid) data!");
                 // print JSON input
-                cout << "# Received JSON #" << endl;
+                #ifdef SERVER_DEBUG
+                cout << "*** Received JSON ***" << endl;
                 print_json(j);
+                #endif
                 // produce and send response
                 controllers::harvardReferences::respond(j, res);
             });

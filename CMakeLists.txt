@@ -12,6 +12,9 @@ add_executable(harvard-references-server main.cpp)
 add_subdirectory(controllers)
 target_link_libraries(
         harvard-references-server
-        controllers
+        harvard-references-server-controllers
         ${Boost_LIBRARIES}
         Threads::Threads)
+
+target_compile_definitions(harvard-references-server PRIVATE SERVER_DEBUG=1)
+target_compile_definitions(harvard-references-server-controllers PRIVATE SERVER_DEBUG=1)
