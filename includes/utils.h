@@ -51,7 +51,7 @@ inline void sanitize_request(nlohmann::json& json) {
     using namespace std;
     using namespace nlohmann;
 
-    static regex rHtmlTags(  R"(([^\w\s\@\.\-\_]+))"  );
+    static regex rHtmlTags(  R"(([^\w\s\@\.\-\_\/\?\=\:\,]+))"  );
 
     static function<string(const string&)> sanitizeString =
             [](const string& input) -> string {

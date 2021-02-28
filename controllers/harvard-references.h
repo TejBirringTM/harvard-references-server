@@ -12,10 +12,9 @@
 #include <optional>
 #include "errors.h"
 #include <vector>
-#include "utils.h"
+#include "verifyFields.h"
 namespace controllers::harvardReferences {
-    void respond(const nlohmann::json& req, crow::response& res);
-
+    void respond(nlohmann::json& req, crow::response& res);
 
 
 
@@ -23,9 +22,9 @@ namespace controllers::harvardReferences {
     struct ReferenceTypeHandler {
         const char* type;
         const Fields fields;
-        const std::function<void(const nlohmann::json& req, crow::response& res)> handler;
+        const std::function<void(nlohmann::json& req, crow::response& res)> handler;
 
-        void respond(const nlohmann::json& req, crow::response& res) const {
+        void respond(nlohmann::json& req, crow::response& res) const {
             verifyFields(req, fields);
             handler(req, res);
         }

@@ -4,7 +4,7 @@
 #include "errors.h"
 #include <iostream>
 #include <variant>
-
+#include "boost/regex.hpp"
 
 
 
@@ -16,6 +16,20 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
         try {
             // try and fetch value from JSON req obj, will throw if doesn't exist
             const auto value = req.at(field.name);
+
+
+            // check co-fields:
+            if (field.mandatoryIf.size() > 0) {
+                for (const auto& coField : field.mandatoryIf) {
+                    try {
+                        req.at(coField);
+                    } catch( const json::out_of_range& ) {
+                        throw MandatoryCoFieldIsEmpty(field.name, coField);
+                    }
+                }
+            }
+
+
             // check type:
             if (value.type() != field.getType())
                 throw WrongType(field.name, field.getType(), value.type());
@@ -28,6 +42,12 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
                 const auto len = static_cast<json::string_t>(value).length();
                 if ( (len < rules.minLength) || (len > rules.maxLength) )
                     throw ValIncorrectLength(field.name, rules.minLength, rules.maxLength, len);
+                // check if matches regex-specified format
+                if (rules.regexCheck) {
+                    const auto val = static_cast<json::string_t>(value);
+                    if (!boost::regex_match(val, *rules.regexCheck))
+                        throw IncorrectFormat(field.name);
+                }
             }
 
 

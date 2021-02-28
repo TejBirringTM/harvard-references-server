@@ -140,7 +140,7 @@ static std::vector<ReferenceTypeHandler> handlers = {
 
 
 
-void controllers::harvardReferences::respond(const nlohmann::json& req, crow::response& res) {
+void controllers::harvardReferences::respond(nlohmann::json& req, crow::response& res) {
     try {
         const std::string type = req.at("type");
 

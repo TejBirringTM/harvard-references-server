@@ -29,10 +29,26 @@ protected:
 };
 
 
+struct IncorrectFormat : FieldError {
+public:
+    explicit IncorrectFormat(const std::string& field) :
+            FieldError(field, "Value does not match the expected format!")
+    {}
+};
+
+
 struct MandatoryFieldIsEmpty : FieldError {
 public:
     explicit MandatoryFieldIsEmpty(const std::string& field) :
     FieldError(field, "This is a mandatory field and it has not been specified!")
+    {}
+};
+
+
+struct MandatoryCoFieldIsEmpty : FieldError {
+public:
+    explicit MandatoryCoFieldIsEmpty(const std::string& field, const std::string& requiredCoField) :
+    FieldError(field, "Field '" + requiredCoField + "' is required!")
     {}
 };
 

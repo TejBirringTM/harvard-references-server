@@ -4,15 +4,20 @@
 #include "../../includes/json.h"
 #include "../../schema/fields.h"
 #include "../../includes/utils.h"
+#include "../../includes/html.h"
+#include "utils/types.h"
+#include "utils/authors.h"
+#include "utils/date_time.h"
+#include <string>
 
 inline controllers::harvardReferences::ReferenceTypeHandler book = {
         "book",
         {
-            fields["book title"].asMandatory(),
+            fields["book title"].required(),
 
             fields["translated title"],
-            fields["language of original"],
-            fields["translators"],
+            fields["language of original"].requiredIf("translators"),
+            fields["translators"].requiredIf("language of original"),
             fields["year translated"],
 
             fields["authors"],
@@ -21,21 +26,102 @@ inline controllers::harvardReferences::ReferenceTypeHandler book = {
 
             fields["volume #"],
             fields["edition #"],
-            fields["publisher"].asMandatory(),
-            fields["publisher location"].asMandatory(),
-            fields["year published"].asMandatory(),
+            fields["publisher"].required(),
+            fields["publisher location"].required(),
+            fields["year published"].required(),
 
             fields["series title"],
-            fields["# in series"],
+            fields["# in series"].requiredIf("series title"),
 
-            fields["url"],
-            fields["date accessed"],
+            fields["url"].requiredIf("date accessed"),
+            fields["date accessed"].requiredIf("url"),
             fields["doi"]
         },
-        [](const nlohmann::json &req, crow::response &res) {
+        [](nlohmann::json &req, crow::response &res) {
+            using namespace std;
+            using namespace html;
+            stringstream oHtml;
+
+            // contributors
+            const bool hasAuthors = !req["authors"].empty();
+            const bool hasCorporateAuthor = !req["corporate author"].empty();
+            const bool hasEditors = !req["editors"].empty();
+            // translation
+            const bool hasTranslatedTitle = !req["translated title"].empty();
+            const bool hasOriginalLanguage = !req["language of original"].empty();  // requires "translators"
+            const bool hasTranslators = !req["translators"].empty();                // requires "language of original"
+            const bool hasYearOfTranslation = !req["year translated"].empty();
+            // access
+            const bool hasUrl = !req["url"].empty();
+            const bool hasDateAccessed = !req["date accessed"].empty();
+            // series
+            const bool hasSeriesTitle = !req["series title"].empty();
+            const bool hasSeriesNo = !req["# in series"].empty();
+            // volume & edition
+            const bool hasVolumeNo = !req["volume #"].empty();
+            const bool hasEditionNo = !req["edition #"].empty();
+
+            /* attribution string */
+            if (hasAuthors) {
+                oHtml << joinList(reverseAbbreviatedNames(req["authors"]));
+            }
+            else if (hasCorporateAuthor) {
+                oHtml << static_cast<std::string>(req["corporate author"]);
+            }
+            else if (hasEditors) {
+                const string ed = req["editors"].size() > 1 ? "eds." : "ed.";
+                oHtml << joinList(reverseAbbreviatedNames(req["editors"])) << " " << ed;
+            }
+            else {
+                oHtml << em <<str(req["book title"]) << _em;
+            }
+            oHtml << " (" << req["year published"] << ").";
+            /* title string */
+            if (hasAuthors || hasCorporateAuthor || hasEditors) {
+                oHtml << " " << em <<str(req["book title"])  << "." << _em;
+                if (hasTranslatedTitle) {
+                    oHtml << " " << em << "[" << str(req["translated title"]) << "]." << _em;
+                }
+            }
+            /* translated title */
+            if (hasOriginalLanguage && hasTranslators) {
+                oHtml << " " << "Translated from " << str(req["language of original"]) << " by "
+                      << joinList(abbreviatedNames(req["translators"]));
+                if (hasYearOfTranslation) {
+                    oHtml << " (" << req["year translated"] << ")";
+                }
+                oHtml << ".";
+            }
+            /* online indicator */
+            if (hasUrl && hasDateAccessed) {
+                oHtml << " " << "[Online].";
+            }
+            /* series info */
+            if (hasSeriesTitle) {
+                oHtml << " " << str(req["series title"]) << ".";
+                if (hasSeriesNo)
+                    oHtml << " " << "Number " << req["# in series"] << ".";
+            }
+            /* volume # */
+            if (hasVolumeNo && (req["volume #"] > 1) ) {
+                oHtml << " Vol. " << req["volume #"] << ".";
+            }
+            /* edition # */
+            if (hasEditionNo && (req["edition #"] > 1) ) {
+                oHtml << " " << ord(req["edition #"]) << " edn.";
+            }
+            /* publisher info */
+            oHtml << " " << str(req["publisher location"]) << ": " << str(req["publisher"]) << ".";
+            /* */
+            if (hasUrl && hasDateAccessed) {
+                oHtml << " Available from: " << lnk(req["url"]);
+                oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
+            }
+
+            cout << oHtml.str() << endl;
             send_response(res, nlohmann::json({
-                {"string", "special"},
-                {"html", "special"}
+                {"string", "..."},
+                {"html", oHtml.str()}
             }));
         }
 };
