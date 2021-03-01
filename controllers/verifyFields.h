@@ -7,15 +7,18 @@
 #include "boost/regex.hpp"
 
 
-
 inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
     using namespace std;
 
     for (const auto& field : fields) {
         #ifdef SERVER_DEBUG
-        cout << "   Verifying field: '" << field.name << "'" << endl;
+        cout << "       Verifying field: '" << field.name << "'" << endl;
         #endif
         try {
+            // try and fetch value from JSON req obj, will throw if doesn't exist
+            const auto value = req.at(field.name);
+
+
             // check required co-fields:
             if (field.mandatoryIf.size() > 0) {
                 for (const auto& coField : field.mandatoryIf) {
@@ -26,10 +29,6 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
                     }
                 }
             }
-
-
-            // try and fetch value from JSON req obj, will throw if doesn't exist
-            const auto value = req.at(field.name);
 
 
             // check type:
