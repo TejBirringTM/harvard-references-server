@@ -10,7 +10,7 @@ int main(int nArgs, char* vectorArgs[]) {
     using json = nlohmann::json;
 
     #ifdef SERVER_DEBUG
-    cout << "RUNNING DEBUG VARIANT!" << endl;
+    cout << "THIS IS THE DEBUG VARIANT!" << endl;
     #endif
 
     // define the route + allowed methods + main handler function
@@ -21,16 +21,16 @@ int main(int nArgs, char* vectorArgs[]) {
                 try {
                     j = json::parse(req.body);
                 } catch(const json::parse_error&) {
-                    send_error_response(res, 400, "Please submit valid data!");
+                    send_error_response(res, 400, "Failed to parse request: Please submit valid data!");
                 }
                 catch (const std::exception& e) {
-                    send_error_response(res, 500, "Failed to parse data!");
+                    send_error_response(res, 500, "Failed to parse request: Something went wrong!");
                 }
                 // sanitize JSON input
                 sanitize_request(j);
-                // error if nothing in json
+                // error if nothing in JSON
                 if (j.empty())
-                    send_error_response(res, 400, "Please submit (valid) data!");
+                    send_error_response(res, 400, "Failed to parse request: Request is empty. Please submit (valid) data!");
                 // print JSON input
                 #ifdef SERVER_DEBUG
                 cout << "*** Received JSON ***" << endl;
