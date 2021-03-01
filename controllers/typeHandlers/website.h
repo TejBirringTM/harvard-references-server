@@ -23,7 +23,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler website = {
                 fields["url"].required(),
                 fields["date accessed"].required(),
         },
-        [](nlohmann::json &req, crow::response &res) {
+        [](nlohmann::json &req, crow::response &res) -> std::string {
             using namespace std;
             using namespace html;
             stringstream oHtml;
@@ -61,10 +61,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler website = {
             oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
 
 
-            send_response(res, nlohmann::json({
-                                                      {"string", "Not implemented (yet)."},
-                                                      {"html", oHtml.str()}
-                                              }));
+            return oHtml.str();
         }
 };
 

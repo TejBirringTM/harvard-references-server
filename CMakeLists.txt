@@ -5,16 +5,20 @@ set(CMAKE_CXX_STANDARD 17)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 find_package(Threads)
 
-include_directories(${Boost_INCLUDE_DIRS})
-add_executable(harvard-references-server main.cpp)
 add_subdirectory(controllers)
+
+add_executable(harvard-references-server main.cpp)
+
 target_link_libraries(
         harvard-references-server
         harvard-references-server-controllers
         ${Boost_LIBRARIES}
-        Threads::Threads)
+        Threads::Threads
+)
 
 if(DEFINED ENV{SERVER_DEBUG})
     message("Making the DEBUG variant...")

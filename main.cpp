@@ -11,6 +11,8 @@ int main(int nArgs, char* vectorArgs[]) {
 
     #ifdef SERVER_DEBUG
     cout << "THIS IS THE DEBUG VARIANT!" << endl;
+    #else
+    cout << "THIS IS THE PRODUCTION VARIANT!" << endl;
     #endif
 
     // define the route + allowed methods + main handler function

@@ -62,7 +62,7 @@ using FieldType = std::variant<String, Unsigned, ArrayOfString, ArrayOfUnsigned>
 
 struct Field
 {
-    std::string name;
+    const std::string name;
     FieldType type;
     FieldGroup group;
     bool mandatory = false;
@@ -91,7 +91,6 @@ struct Field
         f.mandatoryIfEmpty = {fields...};
         return f;
     }
-
 
     const json::value_t getType() const
     {
@@ -127,7 +126,7 @@ struct Field
 using Fields = std::vector<Field>;
 
 using FieldEntry = std::pair<const std::string, const Field>;
-inline FieldEntry FE(const std::string &&name, FieldType type, FieldGroup group)
+inline FieldEntry FE(const char* name, FieldType type, FieldGroup group)
 {
     return FieldEntry(name, Field{name, type, group});
 }

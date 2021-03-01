@@ -7,10 +7,7 @@
 #include "../includes/json.h"
 #include "boost/regex.hpp"
 
-template<typename T>
-const char* to_c_str(T in) {
-    return std::string(in).c_str();
-}
+
 
 
 struct FieldError : public std::runtime_error {
@@ -18,10 +15,6 @@ protected:
     explicit FieldError(const std::string& field, const std::string& what) :
     runtime_error("Error in field: '" + field + "'. " + what)
     {}
-//    explicit FieldError(const std::string& field) :
-//    runtime_error(""),
-//    field(field)
-//    {}
 };
 
 
@@ -63,7 +56,6 @@ public:
             runtime_error("One of the following fields are required: " + listFields(field, fields))
     {}
 };
-
 
 
 struct WrongType : FieldError {
@@ -169,28 +161,7 @@ public:
     {}
 };
 
-//    std::optional<unsigned> allowedMin;
-//    std::optional<std::string> strAllowedMin;
-//    std::optional<unsigned> allowedMax;
-//    std::optional<std::string> strAllowedMax;
-//    const unsigned actualLength;
-//
-//public:
-//    explicit IncorrectLength(const std::string& field, std::optional<unsigned> allowedMin, std::optional<unsigned> allowedMax, const unsigned actualLength) :
-//    FieldError(field), allowedMin(allowedMin), allowedMax(allowedMax), actualLength(actualLength), strAllowedMin()
-//    {}
-//
-//    virtual const char* what() noexcept final {
-//        if (allowedMin && !allowedMax) {
-//            return "Error in field: '" + field + "'. " + "Minimum length is " + allowedMin.value() + ".";
-//        }
-//        else if (allowedMax && !allowedMin) {
-//            return "Error in field: '" + field + "'. " + "Minimum length is " + allowedMax.value() + ".";
-//        }
-//        else {
-//            return "Error in field: '" + field + "'. " + "Minimum length is " + allowedMin.value() + ", " + "maximum length is " + allowedMax.value() + ".";
-//        }
-//
-//    }
-//};
+
+
+
 #endif //HARVARD_REFERENCES_SERVER_ERRORS_H

@@ -1,20 +1,22 @@
 #include "harvard-references.h"
 #include "../includes/utils.h"
-#include <map>
-#include "errors.h"
 #include "typeHandlers/typeHandlers.h"
+#include "errors.h"
+#include <map>
+// namespaces
 using namespace std;
 using json = nlohmann::json;
 using namespace controllers::harvardReferences;
-
-
-
-
-using HandlerMap = map<string, const ReferenceTypeHandler&>;
-using Handler = pair<string, const ReferenceTypeHandler&>;
+// aliases
+using HandlerMap = map<const std::string, const ReferenceTypeHandler&>;
+using Handler = pair<const std::string, const ReferenceTypeHandler&>;
 Handler h(const ReferenceTypeHandler& rth) {
     return Handler(rth.type, rth);
 };
+
+
+
+
 static HandlerMap handlers = {
         h(book),
         h(bookChapter),
@@ -43,7 +45,10 @@ inline void handle_object(nlohmann::json& req, crow::response& res) {
         #ifdef SERVER_DEBUG
         cout << "*** Running top-level handler for 'type': '" << it->second.type << "' ***" << endl;
         #endif
-        it->second.respond(req, res);
+        send_response(res,json({
+                            {"string", "Not implemented yet."},
+                            {"html", it->second.handle(req, res)}
+        }));
     } else {
         send_error_response(res, 400, "Reference 'type' not recognized!");
     }
@@ -59,7 +64,7 @@ inline void handle_array(nlohmann::json& req, crow::response& res) {
 
 
 
-inline void controllers::harvardReferences::respond(nlohmann::json& req, crow::response& res) {
+void controllers::harvardReferences::respond(nlohmann::json& req, crow::response& res) {
     try {
         if (req.is_object())
             handle_object(req, res);
@@ -80,5 +85,3 @@ inline void controllers::harvardReferences::respond(nlohmann::json& req, crow::r
         send_error_response(res, 500, "Something went wrong!");
     }
 }
-
-

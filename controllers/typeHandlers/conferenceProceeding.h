@@ -31,7 +31,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler conferenceProceeding
                 fields["conference date begin"].required(),
                 fields["conference date end"].required()
         },
-        [](nlohmann::json &req, crow::response &res) {
+        [](nlohmann::json &req, crow::response &res) -> std::string {
             using namespace std;
             using namespace html;
             stringstream oHtml;
@@ -66,10 +66,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler conferenceProceeding
             }
 
 
-            send_response(res, nlohmann::json({
-                                                      {"string", "Not implemented (yet)."},
-                                                      {"html", oHtml.str()}
-                                              }));
+            return oHtml.str();
         }
 };
 

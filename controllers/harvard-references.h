@@ -3,37 +3,34 @@
 #include "../includes/crow_all.h"
 #include "../includes/json.h"
 #include "../schema/fields.h"
-#include <string>
-#include <array>
-#include <tuple>
-#include <typeinfo>
-#include <functional>
-#include <map>
-#include <optional>
-#include "errors.h"
-#include <vector>
 #include "verifyFields.h"
+#include <string>
+#include <functional>
 #include <iostream>
 namespace controllers::harvardReferences {
+
+
+
+
     void respond(nlohmann::json& req, crow::response& res);
 
 
 
 
     struct ReferenceTypeHandler {
-        const char* type;
+        const std::string type;
         const Fields fields;
-        const std::function<void(nlohmann::json& req, crow::response& res)> handler;
+        const std::function<std::string(nlohmann::json& req, crow::response& res)> producer;
 
-        void respond(nlohmann::json& req, crow::response& res) const {
+        std::string handle(nlohmann::json& req, crow::response& res) const {
             #ifdef SERVER_DEBUG
             std::cout << "  Verifying fields..." << std::endl;
             #endif
             verifyFields(req, fields);
             #ifdef SERVER_DEBUG
-            std::cout << "  Running handler funct..." << std::endl;
+            std::cout << "  Running producer funct..." << std::endl;
             #endif
-            handler(req, res);
+            return producer(req, res);
         }
     };
 

@@ -39,7 +39,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
                 fields["page range end"].requiredIf("page range begin"),
                 fields["doi"]
         },
-        [](nlohmann::json &req, crow::response &res) {
+        [](nlohmann::json &req, crow::response &res) -> std::string {
             using namespace std;
             using namespace html;
             stringstream oHtml;
@@ -126,10 +126,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
             }
 
 
-            send_response(res, nlohmann::json({
-                                                      {"string", "Not implemented (yet)."},
-                                                      {"html", oHtml.str()}
-                                              }));
+            return oHtml.str();
         }
 };
 
