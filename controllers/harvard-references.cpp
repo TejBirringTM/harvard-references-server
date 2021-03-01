@@ -12,7 +12,10 @@ using namespace controllers::harvardReferences;
 
 
 static std::vector<ReferenceTypeHandler> handlers = {
-        book
+        book,
+        bookChapter,
+        journalArticle,
+        conferenceProceeding,
 //        {"book chapter",
 //            [](const nlohmann::json& req, crow::response& res){
 //                verifyFields(req,
@@ -159,8 +162,11 @@ void controllers::harvardReferences::respond(nlohmann::json& req, crow::response
     } catch (const json::out_of_range&) {
         send_error_response(res, 400, "Reference 'type' not specified!");
         return;
-    }
-    catch (const std::exception& e) {
+    } catch (const FieldError& e) {
+        send_error_response(res, 400, e.what()); // "Failed to process response!"
+    } catch (const MandatoryFieldGroupIsEmpty& e) {
+        send_error_response(res, 400, e.what()); // "Failed to process response!"
+    } catch (const std::exception& e) {
         cerr << e.what() << endl;
         send_error_response(res, 500, "Something went wrong!"); // "Failed to process response!"
         return;

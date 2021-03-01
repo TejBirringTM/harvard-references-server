@@ -1,7 +1,7 @@
 #include "includes/crow_all.h"
 #include "controllers/harvard-references.h"
 #include "includes/utils.h"
-#include "includes/global.h"
+//#include "includes/global.h"
 
 int main(int nArgs, char* vectorArgs[]) {
     using namespace std;

@@ -16,11 +16,7 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
         cout << "   Verifying field: '" << field.name << "'" << endl;
         #endif
         try {
-            // try and fetch value from JSON req obj, will throw if doesn't exist
-            const auto value = req.at(field.name);
-
-
-            // check co-fields:
+            // check required co-fields:
             if (field.mandatoryIf.size() > 0) {
                 for (const auto& coField : field.mandatoryIf) {
                     try {
@@ -30,6 +26,10 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
                     }
                 }
             }
+
+
+            // try and fetch value from JSON req obj, will throw if doesn't exist
+            const auto value = req.at(field.name);
 
 
             // check type:
@@ -112,6 +112,20 @@ inline void verifyFields(const nlohmann::json& req, const Fields& fields) {
             // throw if mandatory value not available from JSON req obj.
             if (field.mandatory)
                 throw MandatoryFieldIsEmpty(field.name);
+            // throw if this is a mandatory value because others in the group are not specified
+            if (field.mandatoryIfEmpty.size() > 0) {
+                auto nFields = field.mandatoryIfEmpty.size();
+                for (const auto& coField : field.mandatoryIfEmpty) {
+                    try {
+                        req.at(coField);
+                    } catch( const json::out_of_range& ) {
+                        cout << coField << endl;
+                        nFields--;
+                    }
+                }
+                if (nFields == 0)
+                    throw MandatoryFieldGroupIsEmpty(field.name, field.mandatoryIfEmpty);
+            }
         }
     } // for (const auto& field : fields)
 }

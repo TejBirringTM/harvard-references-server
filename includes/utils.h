@@ -14,7 +14,7 @@ inline void print_json(const nlohmann::json& json) {
         return;
     }
     for (const auto& [key, val] : json.items()) {
-        std::cout << "  \"" << key << "\": \"" << val << "\"" << std::endl;
+        std::cout << "  \"" << key << "\": " << val << std::endl;
     }
 }
 
@@ -50,8 +50,8 @@ void recursive_iterate_json(nlohmann::json& j, UnaryFunction f)
 inline void sanitize_request(nlohmann::json& json) {
     using namespace std;
     using namespace nlohmann;
-
-    static regex rHtmlTags(  R"(([^\w\s\@\.\-\_\/\?\=\:\,]+))"  );
+    // specifies allowed chars, discards all those not listen in the expression (with ^):
+    static regex rHtmlTags(  R"(([^\w\s\@\.\-\–\_\/\?\=\:\,\+\=\&\!\±\€\£\#\$\%\^\*\(\)\[\]\'\"\~]+))"  );
 
     static function<string(const string&)> sanitizeString =
             [](const string& input) -> string {

@@ -5,7 +5,7 @@
 #include <functional>
 #include <optional>
 #include "../includes/json.h"
-
+#include "boost/regex.hpp"
 
 template<typename T>
 const char* to_c_str(T in) {
@@ -15,17 +15,13 @@ const char* to_c_str(T in) {
 
 struct FieldError : public std::runtime_error {
 protected:
-    std::string field;
-
     explicit FieldError(const std::string& field, const std::string& what) :
-    runtime_error("Error in field: '" + field + "'. " + what),
-    field(field)
+    runtime_error("Error in field: '" + field + "'. " + what)
     {}
-
-    explicit FieldError(const std::string& field) :
-    runtime_error(""),
-    field(field)
-    {}
+//    explicit FieldError(const std::string& field) :
+//    runtime_error(""),
+//    field(field)
+//    {}
 };
 
 
@@ -51,6 +47,23 @@ public:
     FieldError(field, "Field '" + requiredCoField + "' is required!")
     {}
 };
+
+
+struct MandatoryFieldGroupIsEmpty : public std::runtime_error {
+private:
+    std::string listFields(const std::string& field, const std::vector<std::string>& fields) {
+        std::string tmp = field + ", " + boost::algorithm::join(fields, ", ");
+        tmp = boost::regex_replace(tmp, boost::regex(R"((^))"), "'");
+        tmp = boost::regex_replace(tmp, boost::regex(R"((, ))"), "', '");
+        tmp = boost::regex_replace(tmp, boost::regex(R"(($))"), "'");
+        return tmp;
+    }
+public:
+    explicit MandatoryFieldGroupIsEmpty(const std::string& field, const std::vector<std::string>& fields) :
+            runtime_error("One of the following fields are required: " + listFields(field, fields))
+    {}
+};
+
 
 
 struct WrongType : FieldError {

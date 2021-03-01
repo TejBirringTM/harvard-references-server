@@ -6,6 +6,7 @@
 #include <functional>
 #include <variant>
 #include <optional>
+#include <limits>
 #include "../includes/json.h"
 #include "boost/regex.hpp"
 using json = nlohmann::json;
@@ -36,7 +37,7 @@ struct Unsigned
 {
     json::value_t type = json::value_t::number_unsigned;
     unsigned minVal = 1;
-    unsigned maxVal = 10000;
+    unsigned maxVal = std::numeric_limits<unsigned>::max();
 };
 struct ArrayOfString
 {
@@ -55,7 +56,7 @@ struct ArrayOfUnsigned
     unsigned minSize = 1;
     unsigned maxSize = 50;
     unsigned minVal = 1;
-    unsigned maxVal = 10000;
+    unsigned maxVal = std::numeric_limits<unsigned>::max();
 };
 using FieldType = std::variant<String, Unsigned, ArrayOfString, ArrayOfUnsigned>;
 
@@ -66,6 +67,7 @@ struct Field
     FieldGroup group;
     bool mandatory = false;
     std::vector<std::string> mandatoryIf;
+    std::vector<std::string> mandatoryIfEmpty;
 
     Field required() const
     {
@@ -81,6 +83,15 @@ struct Field
         f.mandatoryIf = {requiredFields...};
         return f;
     }
+
+    template <typename... fieldKeys>
+    Field requiredIfEmpty(fieldKeys... fields) const
+    {
+        Field f(*this);
+        f.mandatoryIfEmpty = {fields...};
+        return f;
+    }
+
 
     const json::value_t getType() const
     {
@@ -128,6 +139,7 @@ inline std::map<const std::string, const Field> fields = {
     FE("journal title", String{}, FieldGroup::TITLE),
     FE("webpage title", String{}, FieldGroup::TITLE),
     FE("website title", String{}, FieldGroup::TITLE),
+    FE("paper title", String{}, FieldGroup::TITLE),
     FE("conference title", String{}, FieldGroup::TITLE),
 
     FE("translated title", String{}, FieldGroup::TRANSLATION_INFO),
@@ -136,7 +148,7 @@ inline std::map<const std::string, const Field> fields = {
     FE("year translated", Unsigned{}, FieldGroup::TRANSLATION_INFO),
 
     FE("authors", ArrayOfString{}, FieldGroup::CONTRIBUTORS),
-    FE("corporate author", String{}, FieldGroup::CONTRIBUTORS),
+    FE("organization", String{}, FieldGroup::CONTRIBUTORS),
     FE("username", String{}, FieldGroup::CONTRIBUTORS),
     FE("editors", ArrayOfString{}, FieldGroup::CONTRIBUTORS),
 
@@ -156,7 +168,6 @@ inline std::map<const std::string, const Field> fields = {
     FE("series title", String{}, FieldGroup::SERIES_INFO),
     FE("# in series", Unsigned{}, FieldGroup::SERIES_INFO),
 
-    FE("conference location", String{}, FieldGroup::CONFERENCE_INFO),
-    FE("conference date begin", String{}, FieldGroup::CONFERENCE_INFO),
-    FE("conference date end", String{}, FieldGroup::CONFERENCE_INFO)};
+    FE("conference date begin", String{.regexCheck=boost::regex{REGEX_DATE}}, FieldGroup::CONFERENCE_INFO),
+    FE("conference date end", String{.regexCheck=boost::regex{REGEX_DATE}}, FieldGroup::CONFERENCE_INFO)};
 #endif //HARVARD_REFERENCES_SERVER_FIELDS_H
