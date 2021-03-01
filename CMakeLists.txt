@@ -16,5 +16,11 @@ target_link_libraries(
         ${Boost_LIBRARIES}
         Threads::Threads)
 
-target_compile_definitions(harvard-references-server PRIVATE SERVER_DEBUG=1)
-target_compile_definitions(harvard-references-server-controllers PRIVATE SERVER_DEBUG=1)
+if(DEFINED ENV{SERVER_DEBUG})
+    message("Making the DEBUG variant...")
+    set(CMAKE_BUILD_TYPE Debug)
+    target_compile_definitions(harvard-references-server PRIVATE SERVER_DEBUG=1)
+    target_compile_definitions(harvard-references-server-controllers PRIVATE SERVER_DEBUG=1)
+else()
+    message("Making the PRODUCTION variant...")
+endif()
