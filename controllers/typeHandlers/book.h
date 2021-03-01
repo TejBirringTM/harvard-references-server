@@ -66,7 +66,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler book = {
                 oHtml << joinList(reverseAbbreviatedNames(req["authors"]));
             }
             else if (hasOrganizationName) {
-                oHtml << static_cast<std::string>(req["organization"]);
+                oHtml << str(req["organization"]);
             }
             else if (hasEditors) {
                 const string ed = req["editors"].size() > 1 ? "eds." : "ed.";
