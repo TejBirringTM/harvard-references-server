@@ -23,7 +23,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler website = {
                 fields["url"].required(),
                 fields["date accessed"].required(),
         },
-        [](nlohmann::json &req, crow::response &res) -> std::string {
+        [](nlohmann::json &req) -> std::string {
             using namespace std;
             using namespace html;
             stringstream oHtml;

@@ -29,36 +29,59 @@ static HandlerMap handlers = {
 
 
 
-inline void handle_object(nlohmann::json& req, crow::response& res) {
+inline std::string get_reference_result(nlohmann::json& refObj) {
     auto it = handlers.cend();
 
     try {
-        const string type = req["type"];
+        const string type = refObj["type"];
         it = handlers.find(type);
     } catch (const json::out_of_range&) {
-        send_error_response(res, 400, "Reference 'type' not specified!");
+        throw ControllerError("Reference 'type' not specified!");
     } catch (const json::type_error&) {
-        send_error_response(res, 400, "Reference 'type' not recognized!");
+        throw ControllerError("Reference 'type' not recognized!");
     }
 
-    if (it != handlers.cend()) {
-        #ifdef SERVER_DEBUG
-        cout << "*** Running top-level handler for 'type': '" << it->second.type << "' ***" << endl;
-        #endif
-        send_response(res,json({
-                            {"string", "Not implemented yet."},
-                            {"html", it->second.handle(req, res)}
-        }));
-    } else {
-        send_error_response(res, 400, "Reference 'type' not recognized!");
-    }
+    if (it == handlers.cend())
+        throw ControllerError("Reference 'type' not recognized!");
+
+    return it->second.handle(refObj);
+}
+
+
+
+
+inline void handle_object(nlohmann::json& req, crow::response& res) {
+    const std::string htmlRefStr = get_reference_result(req);
+
+    send_response(res,json({
+                                   {"string", "Not implemented yet."},
+                                   {"html", htmlRefStr}
+    }));
 }
 
 
 
 
 inline void handle_array(nlohmann::json& req, crow::response& res) {
+    if (req.size() > 50)
+        throw ControllerError("Maximum number of references per request exceeded! Maximum number of references allowed is 50.");
 
+    future<string> futures[req.size()];
+    vector<json> results;
+    results.reserve(req.size());
+
+    for (unsigned i = 0; i < req.size(); ++i)
+        futures[i] = async(get_reference_result, ref(req[i]));
+
+    for (unsigned i = 0; i < req.size(); ++i) {
+        auto html = futures[i].get();
+        results.push_back({
+                {"string", "Not implemented yet."},
+                {"html", std::move(html)}
+        });
+    }
+
+    send_response(res, results );
 }
 
 
@@ -74,10 +97,7 @@ void controllers::harvardReferences::respond(nlohmann::json& req, crow::response
             send_error_response(res, 400,
         "Request is of the wrong format! Request be an (reference) 'object' or 'array' (of reference 'objects').");
     }
-    catch (const FieldError& e) {
-        send_error_response(res, 400, e.what());
-    }
-    catch (const MandatoryFieldGroupIsEmpty& e) {
+    catch (const ControllerError& e) {
         send_error_response(res, 400, e.what());
     }
     catch (const std::exception& e) {

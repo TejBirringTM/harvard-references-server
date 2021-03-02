@@ -8,12 +8,17 @@
 #include "boost/regex.hpp"
 
 
+struct ControllerError : public std::runtime_error {
+public:
+    explicit ControllerError(const std::string& what) :
+    runtime_error(what)
+    {}
+};
 
-
-struct FieldError : public std::runtime_error {
+struct FieldError : ControllerError {
 protected:
     explicit FieldError(const std::string& field, const std::string& what) :
-    runtime_error("Error in field: '" + field + "'. " + what)
+    ControllerError("Error with field: '" + field + "'. " + what)
     {}
 };
 
@@ -42,7 +47,7 @@ public:
 };
 
 
-struct MandatoryFieldGroupIsEmpty : public std::runtime_error {
+struct MandatoryFieldGroupIsEmpty : ControllerError {
 private:
     std::string listFields(const std::string& field, const std::vector<std::string>& fields) {
         std::string tmp = field + ", " + boost::algorithm::join(fields, ", ");
@@ -53,7 +58,7 @@ private:
     }
 public:
     explicit MandatoryFieldGroupIsEmpty(const std::string& field, const std::vector<std::string>& fields) :
-            runtime_error("One of the following fields are required: " + listFields(field, fields))
+    ControllerError("One of the following fields are required: " + listFields(field, fields))
     {}
 };
 

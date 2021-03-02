@@ -31,7 +31,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler conferenceProceeding
                 fields["conference date begin"].required(),
                 fields["conference date end"].required()
         },
-        [](nlohmann::json &req, crow::response &res) -> std::string {
+        [](nlohmann::json &req) -> std::string {
             using namespace std;
             using namespace html;
             stringstream oHtml;

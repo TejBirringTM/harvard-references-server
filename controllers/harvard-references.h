@@ -20,9 +20,9 @@ namespace controllers::harvardReferences {
     struct ReferenceTypeHandler {
         const std::string type;
         const Fields fields;
-        const std::function<std::string(nlohmann::json& req, crow::response& res)> producer;
+        const std::function<std::string(nlohmann::json& req)> producer;
 
-        std::string handle(nlohmann::json& req, crow::response& res) const {
+        std::string handle(nlohmann::json& req) const {
             #ifdef SERVER_DEBUG
             std::cout << "  Verifying fields..." << std::endl;
             #endif
@@ -30,7 +30,7 @@ namespace controllers::harvardReferences {
             #ifdef SERVER_DEBUG
             std::cout << "  Running producer funct..." << std::endl;
             #endif
-            return producer(req, res);
+            return producer(req);
         }
     };
 
