@@ -1,7 +1,7 @@
 #include "includes/crow_all.h"
 #include "controllers/controllers.h"
 #include "includes/utils.h"
-//#include "includes/global.h"
+
 
 int main(int nArgs, char* vectorArgs[]) {
     using namespace std;
@@ -9,11 +9,15 @@ int main(int nArgs, char* vectorArgs[]) {
     SimpleApp app;
     using json = nlohmann::json;
 
+
     #ifdef SERVER_DEBUG
     cout << "THIS IS THE DEBUG VARIANT!" << endl;
     #else
     cout << "THIS IS THE PRODUCTION VARIANT!" << endl;
+    // hide 'info' level logs:
+    app.loglevel(crow::LogLevel::Warning);
     #endif
+
 
     // define the route + allowed methods + main handler function
     CROW_ROUTE(app, "/api/v1.0").methods(HTTPMethod::GET)
@@ -42,9 +46,11 @@ int main(int nArgs, char* vectorArgs[]) {
                 controllers::harvardReferences::respond(j, res);
             });
 
+
     // get specified port
     char* _port = getenv("PORT");
     unsigned port = static_cast<unsigned>( _port != nullptr ? stoul(_port) : 8080 );
+
 
     // run server
     cout << "Running server on port: " << port << endl;
