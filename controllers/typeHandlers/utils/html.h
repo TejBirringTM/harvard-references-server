@@ -1,20 +1,20 @@
 #ifndef HARVARD_REFERENCES_SERVER_HTML_H
 #define HARVARD_REFERENCES_SERVER_HTML_H
 #include <string>
-
+#include <string_view>
 namespace html {
     using namespace std;
 
-    const string em = "<em>";
-    const string _em = "</em>";
+    const string_view em = "<em>";
+    const string_view _em = "</em>";
 
-    const string str(const string& in) { return in; }
+    string str(const string& in) { return in; }
 
-    const string lnk(const string& url) {
+    string lnk(const string& url) {
         return "<a href='" + url + "' target='_blank' rel='noreferrer noopener nofollow'>" + url + "</a>";
     }
 
-    const string ord(const unsigned n) {
+    string ord(const unsigned n) {
         static string sup = "<sup>";
         static string _sup = "</sup>";
 
@@ -34,5 +34,6 @@ namespace html {
             return to_string(n) + sup + "th" + _sup;
         }
     }
+
 }
 #endif //HARVARD_REFERENCES_SERVER_HTML_H

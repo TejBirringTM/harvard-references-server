@@ -1,43 +1,36 @@
 #ifndef HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
 #define HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
 #include "../harvard-references.h"
-#include "../../includes/json.h"
 #include "../../schema/fields.h"
-#include "../../includes/utils.h"
-#include "../../includes/html.h"
-#include "utils/types.h"
-#include "utils/authors.h"
-#include "utils/date_time.h"
-#include <string>
-
-inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
+#include "utils/utils.h"
+inline constexpr const controllers::harvardReferences::ReferenceTypeHandler bookChapter {
         "book chapter",
         {
-                fields["chapter title"].required(),
-                fields["book title"].required(),
+                schema::fields::chapterTitle.required(),
+                schema::fields::bookTitle.required(),
 
-                fields["translated title"],
-                fields["language of original"].requiredIf("translators"),
-                fields["translators"].requiredIf("language of original"),
-                fields["year translated"],
+                schema::fields::originalTitle,
+                schema::fields::originalLanguage,
+                schema::fields::translators,
 
-                fields["authors"].required(),
-                fields["editors"].required(),
+                schema::fields::authors.required(),
+                schema::fields::editors.required(),
 
-                fields["volume #"],
-                fields["edition #"],
-                fields["publisher"].required(),
-                fields["publisher location"].required(),
-                fields["year published"].required(),
+                schema::fields::volumeNo,
+                schema::fields::editionNo,
+                schema::fields::publisher.required(),
+                schema::fields::publisherLocation.required(),
+                schema::fields::yearPublished.required(),
 
-                fields["series title"],
-                fields["# in series"].requiredIf("series title"),
+                schema::fields::seriesTitle,
+                schema::fields::seriesNo,
 
-                fields["url"].requiredIf("date accessed"),
-                fields["date accessed"].requiredIf("url"),
-                fields["page range begin"].requiredIf("page range end"),
-                fields["page range end"].requiredIf("page range begin"),
-                fields["doi"]
+                schema::fields::url,
+                schema::fields::dateAccessed,
+                schema::fields::doi,
+
+                schema::fields::pageRangeBegin,
+                schema::fields::pageRangeEnd
         },
         [](nlohmann::json &req) -> std::string {
             using namespace std;
@@ -45,10 +38,9 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
             stringstream oHtml;
 
             // translation
-            const bool hasTranslatedTitle = !req["translated title"].empty();
-            const bool hasOriginalLanguage = !req["language of original"].empty();  // requires "translators"
-            const bool hasTranslators = !req["translators"].empty();                // requires "language of original"
-            const bool hasYearOfTranslation = !req["year translated"].empty();
+            const bool hasTranslatedTitle = !req["original title"].empty();
+            const bool hasOriginalLanguage = !req["original language"].empty();  // requires "translators"
+            const bool hasTranslators = !req["translators"].empty();                // requires "original language"
             // access
             const bool hasUrl = !req["url"].empty();
             const bool hasDateAccessed = !req["date accessed"].empty();
@@ -64,30 +56,22 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
 
             /* chapter attribution string — authors */
             oHtml << joinList(reverseAbbreviatedNames(req["authors"]));
-            if (hasYearOfTranslation) {
-                oHtml << " (" << req["year translated"] << ").";
-            }
-            else {
-                oHtml << " (" << req["year published"] << ").";
-            }
+            oHtml << " (" << req["year published"] << ").";
+
             /* chapter title string */
-            oHtml << " " << str(req["chapter title"])  << ".";
+            oHtml << " " << str(req["chapter title"]) << ".";
             /* book attribution string */
             const string ed = req["editors"].size() > 1 ? "eds." : "ed.";
             oHtml << " In: " << joinList(reverseAbbreviatedNames(req["editors"])) << " " << ed;
             /* book title string */
             oHtml << " " << em << str(req["book title"]) << "." << _em;
             if (hasTranslatedTitle) {
-                oHtml << " " << em << "[" << str(req["translated title"]) << "]." << _em;
+                oHtml << " " << em << "[" << str(req["original title"]) << "]." << _em;
             }
             /* translated string */
             if (hasOriginalLanguage && hasTranslators) {
-                oHtml << " Translated from " << str(req["language of original"]) << " by "
-                      << joinList(abbreviatedNames(req["translators"]));
-//                if (hasYearOfTranslation) {
-//                    oHtml << " (" << req["year translated"] << ")";
-//                }
-                oHtml << ".";
+                oHtml << " Translated from " << str(req["original language"]) << " by "
+                      << joinList(abbreviatedNames(req["translators"])) << ".";
             }
             /* online indicator */
             if (hasUrl && hasDateAccessed) {
@@ -100,11 +84,11 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
                     oHtml << " Number " << req["# in series"] << ".";
             }
             /* volume # */
-            if (hasVolumeNo && (req["volume #"] > 1) ) {
+            if (hasVolumeNo && (req["volume #"] > 1)) {
                 oHtml << " Vol. " << req["volume #"] << ".";
             }
             /* edition # */
-            if (hasEditionNo && (req["edition #"] > 1) ) {
+            if (hasEditionNo && (req["edition #"] > 1)) {
                 oHtml << " " << ord(req["edition #"]) << " edn.";
             }
             /* publisher info and page range */
@@ -112,12 +96,10 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
             if (hasPageRangeBegin && hasPageRangeEnd) {
                 if (req["page range begin"] == req["page range end"]) {
                     oHtml << ", p. " << req["page range begin"] << ".";
-                }
-                else {
+                } else {
                     oHtml << ", pp. " << req["page range begin"] << "-" << req["page range end"] << ".";
                 }
-            }
-            else {
+            } else {
                 oHtml << ".";
             }
             if (hasUrl && hasDateAccessed) {
@@ -125,12 +107,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler bookChapter = {
                 oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
             }
 
-
             return oHtml.str();
         }
 };
-
-
-
-
 #endif //HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H

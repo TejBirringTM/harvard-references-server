@@ -1,27 +1,20 @@
 #ifndef HARVARD_REFERENCES_SERVER_WEBSITE_H
 #define HARVARD_REFERENCES_SERVER_WEBSITE_H
 #include "../harvard-references.h"
-#include "../../includes/json.h"
 #include "../../schema/fields.h"
-#include "../../includes/utils.h"
-#include "../../includes/html.h"
-#include "utils/types.h"
-#include "utils/authors.h"
-#include "utils/date_time.h"
-#include <string>
-
-inline controllers::harvardReferences::ReferenceTypeHandler website = {
+#include "utils/utils.h"
+inline constexpr const controllers::harvardReferences::ReferenceTypeHandler website {
         "website",
         {
-                fields["website title"].required(),
+                schema::fields::websiteTitle.required(),
 
-                fields["authors"],
-                fields["organization"],
+                schema::fields::authors,
+                schema::fields::organization,
 
-                fields["year published"],
+                schema::fields::yearPublished,
 
-                fields["url"].required(),
-                fields["date accessed"].required(),
+                schema::fields::url.required(),
+                schema::fields::dateAccessed.required(),
         },
         [](nlohmann::json &req) -> std::string {
             using namespace std;
@@ -60,12 +53,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler website = {
             oHtml << " Available from: " << lnk(req["url"]);
             oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
 
-
             return oHtml.str();
         }
 };
-
-
-
-
 #endif //HARVARD_REFERENCES_SERVER_WEBSITE_H

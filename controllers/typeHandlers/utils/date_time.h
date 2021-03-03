@@ -1,12 +1,15 @@
 #ifndef HARVARD_REFERENCES_SERVER_DATE_TIME_H
 #define HARVARD_REFERENCES_SERVER_DATE_TIME_H
-#include "../../../schema/fields.h"
+#include "../../../schema/field.h"
 #include "boost/regex.hpp"
-#include "../../../includes/html.h"
+#include "html.h"
 #include <string>
 #include <iostream>
 #include <chrono>
 #include <exception>
+
+
+
 
 inline std::string monthToString(const unsigned month) {
     switch(month) {
@@ -38,6 +41,9 @@ inline std::string monthToString(const unsigned month) {
     throw std::invalid_argument("Invalid month!"); // means: tighten input/regex!
 }
 
+
+
+
 inline std::string dayToString(const unsigned day) {
     if (day > 0 && day < 32) {
         return html::ord(day);
@@ -45,13 +51,16 @@ inline std::string dayToString(const unsigned day) {
     throw std::invalid_argument("Invalid day of month!"); // means: tighten input/regex!
 }
 
+
+
+
 /*
  *      Convert date represented by 'dateString' to full date string.
  *      dateString: yyyy-mm-dd
  */
 inline std::string toLongDateString(const std::string& dateString) {
     using namespace std;
-    static const auto rDate = boost::regex(REGEX_DATE);
+    static const auto rDate = boost::regex(schema::REGEX_DATE);
     // parse string to regex match
     // m[1] => year
     // m[2] => month
@@ -66,13 +75,16 @@ inline std::string toLongDateString(const std::string& dateString) {
     return dayToString(uDay) + " " + monthToString(uMonth) + " " + to_string(uYear);
 }
 
+
+
+
 /*
  *  beginDate: yyyy-mm-dd
  *  endDate: yyyy-mm-dd
  */
 inline std::string toDateRangeString(const std::string& beginDate, const std::string& endDate) {
     using namespace std;
-    static const auto rDate = boost::regex(REGEX_DATE);
+    static const auto rDate = boost::regex(schema::REGEX_DATE);
     // parse strings to regex matches
     // m*[1] => year
     // m*[2] => month
@@ -112,4 +124,8 @@ inline std::string toDateRangeString(const std::string& beginDate, const std::st
         return toLongDateString(beginDate) + "-" + toLongDateString(endDate);
     }
 }
+
+
+
+
 #endif //HARVARD_REFERENCES_SERVER_DATE_TIME_H

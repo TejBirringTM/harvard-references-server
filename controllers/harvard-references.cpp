@@ -20,8 +20,8 @@ Handler h(const ReferenceTypeHandler& rth) {
 static HandlerMap handlers = {
         h(book),
         h(bookChapter),
-        h(journalArticle),
         h(conferenceProceeding),
+        h(journalArticle),
         h(webpage),
         h(website)
 };

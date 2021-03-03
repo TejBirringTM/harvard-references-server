@@ -1,34 +1,27 @@
 #ifndef HARVARD_REFERENCES_SERVER_JOURNALARTICLE_H
 #define HARVARD_REFERENCES_SERVER_JOURNALARTICLE_H
 #include "../harvard-references.h"
-#include "../../includes/json.h"
 #include "../../schema/fields.h"
-#include "../../includes/utils.h"
-#include "../../includes/html.h"
-#include "utils/types.h"
-#include "utils/authors.h"
-#include "utils/date_time.h"
-#include <string>
-
-inline controllers::harvardReferences::ReferenceTypeHandler journalArticle = {
+#include "utils/utils.h"
+inline constexpr const controllers::harvardReferences::ReferenceTypeHandler journalArticle {
         "journal article",
         {
-                fields["article title"].required(),
-                fields["journal title"].required(),
+                schema::fields::articleTitle.required(),
+                schema::fields::journalTitle.required(),
 
-                fields["authors"].required(),
+                schema::fields::authors.required(),
 
-                fields["volume #"].required(),
-                fields["issue #"].required(),
+                schema::fields::volumeNo.required(),
+                schema::fields::issueNo.required(),
 
-                fields["year published"].required(),
+                schema::fields::yearPublished.required(),
 
-                fields["url"].requiredIf("date accessed"),
-                fields["date accessed"].requiredIf("url"),
+                schema::fields::url,
+                schema::fields::dateAccessed,
+                schema::fields::doi,
 
-                fields["page range begin"].required(),
-                fields["page range end"].required(),
-                fields["doi"]
+                schema::fields::pageRangeBegin.required(),
+                schema::fields::pageRangeEnd.required(),
         },
         [](nlohmann::json &req) -> std::string {
             using namespace std;
@@ -41,7 +34,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler journalArticle = {
 
             /* attribution string */
             oHtml << joinList(reverseAbbreviatedNames(req["authors"])) << " ("
-            << req["year published"] << ").";
+                  << req["year published"] << ").";
             /* article title */
             oHtml << " " << str(req["article title"]) << ".";
             /* journal title + online indicator */
@@ -63,12 +56,7 @@ inline controllers::harvardReferences::ReferenceTypeHandler journalArticle = {
                 oHtml << " [Accessed " << toLongDateString(req["date accessed"]) << "].";
             }
 
-
             return oHtml.str();
         }
 };
-
-
-
-
 #endif //HARVARD_REFERENCES_SERVER_JOURNALARTICLE_H

@@ -1,172 +1,78 @@
 #ifndef HARVARD_REFERENCES_SERVER_FIELDS_H
 #define HARVARD_REFERENCES_SERVER_FIELDS_H
-#include <string>
-#include <vector>
-#include <map>
-#include <functional>
-#include <variant>
-#include <optional>
-#include <limits>
-#include "../includes/json.h"
-#include "boost/regex.hpp"
-using json = nlohmann::json;
+#include "field.h"
 
-using regex_check_t = std::optional<boost::regex>;
-inline const char* REGEX_URL = R"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))";
-inline const char* REGEX_DATE = R"((\d\d\d\d)-(0?1|0?2|0?3|0?4|0?5|0?6|0?7|0?8|0?9|10|11|12)-(0[1-9]|[12][0-9]|3[01]))";
-
-enum class FieldGroup
-{
-    TITLE,
-    TRANSLATION_INFO,
-    CONTRIBUTORS,
-    PUBLICATION_INFO,
-    SERIES_INFO,
-    ACCESS_INFO,
-    CONFERENCE_INFO
-};
-
-struct String
-{
-    json::value_t type = json::value_t::string;
-    unsigned minLength = 3;
-    unsigned maxLength = 500;
-    regex_check_t regexCheck = std::nullopt;
-};
-struct Unsigned
-{
-    json::value_t type = json::value_t::number_unsigned;
-    unsigned minVal = 1;
-    unsigned maxVal = std::numeric_limits<unsigned>::max();
-};
-struct ArrayOfString
-{
-    json::value_t type = json::value_t::array;
-    json::value_t innerType = json::value_t::string;
-    unsigned minSize = 1;
-    unsigned maxSize = 50;
-    unsigned minLength = 3;
-    unsigned maxLength = 500;
-    regex_check_t regexCheck = std::nullopt;
-};
-struct ArrayOfUnsigned
-{
-    json::value_t type = json::value_t::array;
-    json::value_t innerType = json::value_t::number_unsigned;
-    unsigned minSize = 1;
-    unsigned maxSize = 50;
-    unsigned minVal = 1;
-    unsigned maxVal = std::numeric_limits<unsigned>::max();
-};
-using FieldType = std::variant<String, Unsigned, ArrayOfString, ArrayOfUnsigned>;
-
-struct Field
-{
-    const std::string name;
-    FieldType type;
-    FieldGroup group;
-    bool mandatory = false;
-    std::vector<std::string> mandatoryIf;
-    std::vector<std::string> mandatoryIfEmpty;
-
-    Field required() const
-    {
-        Field f(*this);
-        f.mandatory = true;
-        return f;
+namespace schema::fields {
+    // private stuff
+    namespace {
+        constexpr const unsigned unsignedMax = std::numeric_limits<unsigned>::max();
+        constexpr const Rules simpleStringRules = {
+                ._stringRules = StringRules{3, 500}
+        };
+        constexpr const Rules simpleUnsignedRules = {
+                ._unsignedRules = UnsignedRules{1, unsignedMax}
+        };
+        constexpr const Rules urlStringRules = {
+                ._stringRules = StringRules{3, 2048, REGEX_URL}
+        };
+        constexpr const Rules dateStringRules = {
+                ._stringRules = StringRules{9, 10, REGEX_DATE}
+        };
+        constexpr const Rules simpleArrayOfStringRules = {
+                ._arrayRules = ArrayRules{
+                        ._minLength = 1,
+                        ._maxLength = 50,
+                        ._innerType = type_t::string,
+                        ._innerRules = ArrayElementRules{
+                                ._stringRules = StringRules{3, 500}
+                        }
+                }
+        };
     }
+    // FIELDS EXPOSED TO OUTSIDE:
+    // title
+    constexpr const Field bookTitle{ "book title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field chapterTitle{ "chapter title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field articleTitle{ "article title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field journalTitle{ "journal title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field webpageTitle{ "webpage title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field websiteTitle{ "website title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field paperTitle{ "paper title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field conferenceTitle{ "conference title", type_t::string, false, {}, {}, simpleStringRules };
 
-    template <typename... requiredFieldKeys>
-    Field requiredIf(requiredFieldKeys... requiredFields) const
-    {
-        Field f(*this);
-        f.mandatoryIf = {requiredFields...};
-        return f;
-    }
+    // translation info
+    constexpr const Field originalTitle{"original title", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field originalLanguage{"original language", type_t::string, false, {"translators"}, {}, simpleStringRules };
+    constexpr const Field translators{"translators", type_t::array, false, {"original language"}, {}, simpleArrayOfStringRules };
 
-    template <typename... fieldKeys>
-    Field requiredIfEmpty(fieldKeys... fields) const
-    {
-        Field f(*this);
-        f.mandatoryIfEmpty = {fields...};
-        return f;
-    }
+    // contributors
+    constexpr const Field authors{"authors", type_t::array, false, {}, {}, simpleArrayOfStringRules };
+    constexpr const Field editors{"editors", type_t::array, false, {}, {}, simpleArrayOfStringRules };
+    constexpr const Field username{ "username", type_t::string, false, {}, {}, simpleStringRules };
+    constexpr const Field organization{ "organization", type_t::string, false, {}, {}, simpleStringRules };
 
-    const json::value_t getType() const
-    {
-        switch (type.index())
-        {
-        case 0:
-            return std::get<String>(type).type;
-        case 1:
-            return std::get<Unsigned>(type).type;
-        case 2:
-            return std::get<ArrayOfString>(type).type;
-        case 3:
-            return std::get<ArrayOfUnsigned>(type).type;
-        }
-        throw std::runtime_error("Invalid FieldType!");
-    }
+    // publication info
+    constexpr const Field volumeNo{"volume #", type_t::number_unsigned, false, {}, {}, simpleUnsignedRules };
+    constexpr const Field issueNo{"issue #", type_t::number_unsigned, false, {}, {}, simpleUnsignedRules };
+    constexpr const Field editionNo{"edition #", type_t::number_unsigned, false, {}, {}, simpleUnsignedRules };
+    constexpr const Field publisher{"publisher", type_t::string, false, {"publisher location"}, {}, simpleStringRules };
+    constexpr const Field publisherLocation{"publisher location", type_t::string, false, {"publisher"}, {}, simpleStringRules };
+    constexpr const Field yearPublished{"year published", type_t::number_unsigned, false, {}, {}, simpleUnsignedRules };
 
-    const json::value_t getInnerType() const
-    {
-        switch (type.index())
-        {
-        case 0:
-        case 1:
-            return json::value_t::null;
-        case 2:
-            return std::get<ArrayOfString>(type).innerType;
-        case 3:
-            return std::get<ArrayOfUnsigned>(type).innerType;
-        }
-        throw std::runtime_error("Invalid FieldType!");
-    }
-};
-using Fields = std::vector<Field>;
+    // access info
+    constexpr const Field url{ "url", type_t::string, false, {"date accessed"}, {}, urlStringRules };
+    constexpr const Field dateAccessed{ "date accessed", type_t::string, false, {"url"}, {}, dateStringRules };
+    constexpr const Field doi{ "doi", type_t::string, false, {}, {}, urlStringRules };
+    constexpr const Field pageRangeBegin{"page range begin", type_t::number_unsigned, false, {"page range end"}, {}, simpleUnsignedRules };
+    constexpr const Field pageRangeEnd{"page range end", type_t::number_unsigned, false, {"page range begin"}, {}, simpleUnsignedRules };
 
-using FieldEntry = std::pair<const std::string, const Field>;
-inline FieldEntry FE(const char* name, FieldType type, FieldGroup group)
-{
-    return FieldEntry(name, Field{name, type, group});
+    // series info
+    constexpr const Field seriesTitle{"series title", type_t::string, false, {"# in series"}, {}, simpleStringRules };
+    constexpr const Field seriesNo{"# in series", type_t::number_unsigned, false, {"series title"}, {}, simpleUnsignedRules };
+
+    // conference info
+    constexpr const Field conferenceDateBegin{"conference date begin", type_t::string, false, {"conference date end"}, {}, dateStringRules };
+    constexpr const Field conferenceDateEnd{"conference date end", type_t::string, false, {"conference date begin"}, {}, dateStringRules };
 }
 
-inline std::map<const std::string, const Field> fields = {
-    FE("book title", String{}, FieldGroup::TITLE),
-    FE("chapter title", String{}, FieldGroup::TITLE),
-    FE("article title", String{}, FieldGroup::TITLE),
-    FE("journal title", String{}, FieldGroup::TITLE),
-    FE("webpage title", String{}, FieldGroup::TITLE),
-    FE("website title", String{}, FieldGroup::TITLE),
-    FE("paper title", String{}, FieldGroup::TITLE),
-    FE("conference title", String{}, FieldGroup::TITLE),
-
-    FE("translated title", String{}, FieldGroup::TRANSLATION_INFO),
-    FE("language of original", String{}, FieldGroup::TRANSLATION_INFO),
-    FE("translators", ArrayOfString{}, FieldGroup::TRANSLATION_INFO),
-    FE("year translated", Unsigned{}, FieldGroup::TRANSLATION_INFO),
-
-    FE("authors", ArrayOfString{}, FieldGroup::CONTRIBUTORS),
-    FE("organization", String{}, FieldGroup::CONTRIBUTORS),
-    FE("username", String{}, FieldGroup::CONTRIBUTORS),
-    FE("editors", ArrayOfString{}, FieldGroup::CONTRIBUTORS),
-
-    FE("volume #", Unsigned{}, FieldGroup::PUBLICATION_INFO),
-    FE("issue #", Unsigned{}, FieldGroup::PUBLICATION_INFO),
-    FE("edition #", Unsigned{}, FieldGroup::PUBLICATION_INFO),
-    FE("publisher", String{}, FieldGroup::PUBLICATION_INFO),
-    FE("publisher location", String{}, FieldGroup::PUBLICATION_INFO),
-    FE("year published", Unsigned{}, FieldGroup::PUBLICATION_INFO),
-
-    FE("url", String{.regexCheck=boost::regex(REGEX_URL)}, FieldGroup::ACCESS_INFO),
-    FE("date accessed", String{.regexCheck=boost::regex{REGEX_DATE}}, FieldGroup::ACCESS_INFO),
-    FE("doi", String{}, FieldGroup::ACCESS_INFO),
-    FE("page range begin", Unsigned{}, FieldGroup::ACCESS_INFO),
-    FE("page range end", Unsigned{}, FieldGroup::ACCESS_INFO),
-
-    FE("series title", String{}, FieldGroup::SERIES_INFO),
-    FE("# in series", Unsigned{}, FieldGroup::SERIES_INFO),
-
-    FE("conference date begin", String{.regexCheck=boost::regex{REGEX_DATE}}, FieldGroup::CONFERENCE_INFO),
-    FE("conference date end", String{.regexCheck=boost::regex{REGEX_DATE}}, FieldGroup::CONFERENCE_INFO)};
 #endif //HARVARD_REFERENCES_SERVER_FIELDS_H

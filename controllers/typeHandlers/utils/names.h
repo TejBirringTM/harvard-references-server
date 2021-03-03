@@ -1,10 +1,17 @@
-#ifndef HARVARD_REFERENCES_SERVER_AUTHORS_H
-#define HARVARD_REFERENCES_SERVER_AUTHORS_H
+#ifndef HARVARD_REFERENCES_SERVER_NAMES_H
+#define HARVARD_REFERENCES_SERVER_NAMES_H
 #include <vector>
 #include <string>
 #include <iostream>
 #include "boost/algorithm/string.hpp"
-#include "types.h"
+
+
+
+
+// private stuff
+namespace {
+    using StringArray = std::vector<std::string>;
+}
 
 
 
@@ -121,4 +128,4 @@ inline std::string joinList(const StringArray& items) {
         return boost::algorithm::join(tmp, ", ") + " and " + lastItem;
     }
 }
-#endif //HARVARD_REFERENCES_SERVER_AUTHORS_H
+#endif //HARVARD_REFERENCES_SERVER_NAMES_H

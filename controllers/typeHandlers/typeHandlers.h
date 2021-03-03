@@ -3,9 +3,9 @@
 
 #include "book.h"
 #include "bookChapter.h"
-#include "journalArticle.h"
 #include "conferenceProceeding.h"
-#include "website.h"
+#include "journalArticle.h"
 #include "webpage.h"
+#include "website.h"
 
 #endif //HARVARD_REFERENCES_SERVER_TYPEHANDLERS_H
