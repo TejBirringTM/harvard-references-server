@@ -2,11 +2,14 @@ cmake_minimum_required(VERSION 3.7)
 project(harvard-references-server)
 
 set(CMAKE_CXX_STANDARD 17)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
+find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIRS})
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads)
 
 add_subdirectory(controllers)
@@ -17,6 +20,7 @@ target_link_libraries(
         harvard-references-server
         harvard-references-server-controllers
         ${Boost_LIBRARIES}
+        ZLIB::ZLIB
         Threads::Threads
 )
 
