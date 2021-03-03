@@ -2,7 +2,9 @@
 #define HARVARD_REFERENCES_SERVER_HTML_H
 #include <string>
 #include <string_view>
-namespace html {
+namespace utils::html {
+
+
     using namespace std;
 
     const string_view em = "<em>";
@@ -34,6 +36,9 @@ namespace html {
             return to_string(n) + sup + "th" + _sup;
         }
     }
+
+
+
 
 }
 #endif //HARVARD_REFERENCES_SERVER_HTML_H

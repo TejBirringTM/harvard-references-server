@@ -34,7 +34,9 @@ inline constexpr const ReferenceTypeHandler bookChapter {
         },
         [](nlohmann::json &req) -> std::string {
             using namespace std;
-            using namespace html;
+            using namespace utils::names;
+            using namespace utils::html;
+            using namespace utils::dateTime;
             stringstream oHtml;
 
             // translation
