@@ -1,9 +1,9 @@
 #ifndef HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
 #define HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
-#include "../harvard-references.h"
+#include "typeHandler.h"
 #include "../../schema/fields.h"
-#include "utils/utils.h"
-inline constexpr const controllers::harvardReferences::ReferenceTypeHandler bookChapter {
+#include "../utils/utils.h"
+inline constexpr const ReferenceTypeHandler bookChapter {
         "book chapter",
         {
                 schema::fields::chapterTitle.required(),

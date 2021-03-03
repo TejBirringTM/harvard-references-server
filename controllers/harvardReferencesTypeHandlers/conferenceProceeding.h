@@ -1,9 +1,9 @@
 #ifndef HARVARD_REFERENCES_SERVER_CONFERENCEPROCEEDING_H
 #define HARVARD_REFERENCES_SERVER_CONFERENCEPROCEEDING_H
-#include "../harvard-references.h"
+#include "typeHandler.h"
 #include "../../schema/fields.h"
-#include "utils/utils.h"
-inline constexpr const controllers::harvardReferences::ReferenceTypeHandler conferenceProceeding {
+#include "../utils/utils.h"
+inline constexpr const ReferenceTypeHandler conferenceProceeding {
         "conference proceeding",
         {
                 schema::fields::paperTitle.required(),

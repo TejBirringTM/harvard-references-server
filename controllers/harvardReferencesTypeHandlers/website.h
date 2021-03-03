@@ -1,9 +1,9 @@
 #ifndef HARVARD_REFERENCES_SERVER_WEBSITE_H
 #define HARVARD_REFERENCES_SERVER_WEBSITE_H
-#include "../harvard-references.h"
+#include "typeHandler.h"
 #include "../../schema/fields.h"
-#include "utils/utils.h"
-inline constexpr const controllers::harvardReferences::ReferenceTypeHandler website {
+#include "../utils/utils.h"
+inline constexpr const ReferenceTypeHandler website {
         "website",
         {
                 schema::fields::websiteTitle.required(),

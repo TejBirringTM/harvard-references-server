@@ -1,6 +1,6 @@
 #ifndef HARVARD_REFERENCES_SERVER_DATE_TIME_H
 #define HARVARD_REFERENCES_SERVER_DATE_TIME_H
-#include "../../../schema/field.h"
+#include "../../schema/field.h"
 #include "boost/regex.hpp"
 #include "html.h"
 #include <string>

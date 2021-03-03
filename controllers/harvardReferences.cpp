@@ -1,30 +1,11 @@
-#include "harvard-references.h"
+#include "controllers.h"
 #include "../includes/utils.h"
-#include "typeHandlers/typeHandlers.h"
 #include "errors.h"
-#include <map>
+// type handlers defined here!
+#include "harvardReferencesTypeHandlers/typeHandlers.h"
 // namespaces
 using namespace std;
 using json = nlohmann::json;
-using namespace controllers::harvardReferences;
-// aliases
-using HandlerMap = map<const std::string, const ReferenceTypeHandler&>;
-using Handler = pair<const std::string, const ReferenceTypeHandler&>;
-Handler h(const ReferenceTypeHandler& rth) {
-    return Handler(rth.type, rth);
-};
-
-
-
-
-static HandlerMap handlers = {
-        h(book),
-        h(bookChapter),
-        h(conferenceProceeding),
-        h(journalArticle),
-        h(webpage),
-        h(website)
-};
 
 
 
@@ -33,18 +14,23 @@ inline std::string get_reference_result(nlohmann::json& refObj) {
     auto it = handlers.cend();
 
     try {
-        const string type = refObj["type"];
-        it = handlers.find(type);
-    } catch (const json::out_of_range&) {
+        const string& type = refObj.at("type");
+        for (it = handlers.cbegin(); it != handlers.cend(); ++it) {
+            if (it->type == type)
+                break;
+        }
+    }
+    catch (const json::out_of_range&) {
         throw ControllerError("Reference 'type' not specified!");
-    } catch (const json::type_error&) {
+    }
+    catch (const json::type_error&) {
         throw ControllerError("Reference 'type' not recognized!");
     }
 
     if (it == handlers.cend())
         throw ControllerError("Reference 'type' not recognized!");
 
-    return it->second.handle(refObj);
+    return it->handle(refObj);
 }
 
 

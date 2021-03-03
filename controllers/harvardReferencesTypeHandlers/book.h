@@ -1,9 +1,9 @@
 #ifndef HARVARD_REFERENCES_SERVER_BOOK_H
 #define HARVARD_REFERENCES_SERVER_BOOK_H
-#include "../harvard-references.h"
+#include "typeHandler.h"
 #include "../../schema/fields.h"
-#include "utils/utils.h"
-inline constexpr const controllers::harvardReferences::ReferenceTypeHandler book {
+#include "../utils/utils.h"
+inline constexpr const ReferenceTypeHandler book {
     "book",
     {
         schema::fields::bookTitle.required(),

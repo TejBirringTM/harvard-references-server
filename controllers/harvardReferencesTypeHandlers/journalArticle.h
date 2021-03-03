@@ -1,9 +1,9 @@
 #ifndef HARVARD_REFERENCES_SERVER_JOURNALARTICLE_H
 #define HARVARD_REFERENCES_SERVER_JOURNALARTICLE_H
-#include "../harvard-references.h"
+#include "typeHandler.h"
 #include "../../schema/fields.h"
-#include "utils/utils.h"
-inline constexpr const controllers::harvardReferences::ReferenceTypeHandler journalArticle {
+#include "../utils/utils.h"
+inline constexpr const ReferenceTypeHandler journalArticle {
         "journal article",
         {
                 schema::fields::articleTitle.required(),
