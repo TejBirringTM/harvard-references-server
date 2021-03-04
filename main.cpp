@@ -43,7 +43,7 @@ int main(int nArgs, char* vectorArgs[]) {
                 print_json(j);
                 #endif
                 // produce and send response
-                controllers::harvardReferences::respond(j, res);
+                controllers::respond(j, res);
             });
 
 

@@ -3,6 +3,10 @@
 #include <array>
 #include "../includes/json.h"
 namespace schema {
+    inline constexpr const char* REGEX_URL = R"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))";
+    inline constexpr const char* REGEX_DATE = R"((\d\d\d\d)-(0?1|0?2|0?3|0?4|0?5|0?6|0?7|0?8|0?9|10|11|12)-(0[1-9]|[12][0-9]|3[01]))";
+
+
     using ValType = nlohmann::json::value_t;
     inline std::string toString(const ValType type) noexcept
     {
@@ -31,21 +35,25 @@ namespace schema {
         }
     }
 
+
     struct StringRules {
         unsigned _minLength;
         unsigned _maxLength;
         std::string_view _regex;
     };
 
+
     struct UnsignedRules {
         unsigned _minVal;
         unsigned _maxVal;
     };
 
+
     union ArrayElementRules {
         StringRules _stringRules;
         UnsignedRules _unsignedRules;
     };
+
 
     struct ArrayRules {
         unsigned _minLength;
@@ -54,11 +62,13 @@ namespace schema {
         ArrayElementRules _innerRules;
     };
 
+
     union Rules {
         StringRules _stringRules;
         UnsignedRules _unsignedRules;
         ArrayRules _arrayRules;
     };
+
 
     struct Field {
         std::string_view _name;
@@ -123,6 +133,6 @@ namespace schema {
         }
     };
 
-    inline constexpr const char* REGEX_URL = R"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))";
-    inline constexpr const char* REGEX_DATE = R"((\d\d\d\d)-(0?1|0?2|0?3|0?4|0?5|0?6|0?7|0?8|0?9|10|11|12)-(0[1-9]|[12][0-9]|3[01]))";
+
+    using Schema = const std::array<Field, 50>;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "typeHandler.h"
-#include "../../schema/fields.h"
+#include "../../schema/schema.h"
 #include "../utils/utils.h"
 inline constexpr const ReferenceTypeHandler conferenceProceeding {
         "conference proceeding",

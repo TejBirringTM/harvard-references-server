@@ -1,7 +1,7 @@
 #pragma once
-#include "field.h"
+#include "_field.h"
 namespace schema::fields {
-    // private stuff
+    // PRIVATE STUFF
     namespace {
         constexpr const unsigned unsignedMax = std::numeric_limits<unsigned>::max();
         constexpr const Rules simpleStringRules = {
@@ -27,6 +27,8 @@ namespace schema::fields {
                 }
         };
     }
+
+
     // FIELDS EXPOSED TO OUTSIDE:
     // title
     constexpr const Field bookTitle{"book title", ValType::string, false, {}, {}, simpleStringRules };
@@ -71,4 +73,8 @@ namespace schema::fields {
     // conference info
     constexpr const Field conferenceDateBegin{"conference date begin", ValType::string, false, {"conference date end"}, {}, dateStringRules };
     constexpr const Field conferenceDateEnd{"conference date end", ValType::string, false, {"conference date begin"}, {}, dateStringRules };
+
+
+    // USEFUL FUNCTIONS:
+    void verifyFields(nlohmann::json &req, const Schema& schema);
 }

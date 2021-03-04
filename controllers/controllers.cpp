@@ -1,8 +1,8 @@
 #include "controllers.h"
 #include "../includes/utils.h"
-#include "errors.h"
+#include "error.h"
 // type handlers defined here!
-#include "harvardReferencesTypeHandlers/typeHandlers.h"
+#include "typeHandlers/typeHandlers.h"
 // namespaces
 using namespace std;
 using json = nlohmann::json;
@@ -73,17 +73,19 @@ inline void handle_array(nlohmann::json& req, crow::response& res) {
 
 
 
-void controllers::harvardReferences::respond(nlohmann::json& req, crow::response& res) {
+void controllers::respond(nlohmann::json& req, crow::response& res) {
     try {
         if (req.is_object())
             handle_object(req, res);
         else if (req.is_array())
             handle_array(req, res);
         else
-            send_error_response(res, 400,
-        "Request is of the wrong format! Request be an (reference) 'object' or 'array' (of reference 'objects').");
+            throw ControllerError("Request is of the wrong format! Request be an (reference) 'object' or 'array' (of reference 'objects').");
     }
     catch (const ControllerError& e) {
+        send_error_response(res, 400, e.what());
+    }
+    catch (const SchemaError& e) {
         send_error_response(res, 400, e.what());
     }
     catch (const std::exception& e) {

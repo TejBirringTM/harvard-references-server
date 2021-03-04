@@ -1,9 +1,8 @@
 #pragma once
 #include "typeHandler.h"
-#include <map>
-#include <memory>
 
 
+// include handlers
 #include "book.h"
 #include "bookChapter.h"
 #include "conferenceProceeding.h"
@@ -12,8 +11,7 @@
 #include "website.h"
 
 
-
-
+// list handlers
 constexpr const std::array<const ReferenceTypeHandler, 6> handlers {
     book,
     bookChapter,

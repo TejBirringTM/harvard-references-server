@@ -14,7 +14,7 @@ find_package(Threads)
 
 add_subdirectory(controllers)
 
-add_executable(harvard-references-server main.cpp)
+add_executable(harvard-references-server main.cpp schema/verifyFields.cpp)
 
 target_link_libraries(
         harvard-references-server

@@ -20,3 +20,8 @@ $ ./run.sh
 # For Debugging (using GDB)
 $ ./run_debug.sh
 ```
+
+To open a terminal in existing container:
+```
+$ docker exec -it <container name> bash
+```
