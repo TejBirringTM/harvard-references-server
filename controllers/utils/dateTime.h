@@ -5,7 +5,6 @@
 #include <string>
 #include <iostream>
 #include <chrono>
-#include <exception>
 namespace utils::dateTime {
 
 

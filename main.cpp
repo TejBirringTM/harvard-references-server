@@ -1,6 +1,7 @@
 #include "includes/crow_release_v0.2.h"
 #include "controllers/controllers.h"
-#include "includes/utils.h"
+#include "security/security.h"
+#include "responder.h"
 
 
 int main(int nArgs, char* vectorArgs[]) {
@@ -21,29 +22,35 @@ int main(int nArgs, char* vectorArgs[]) {
 
     // define the route + allowed methods + main handler function
     CROW_ROUTE(app, "/api/v1.0").methods(HTTPMethod::GET)
-            ([](const request& req, response& res){
-                // try parse JSON input
+            ([](const request& req, response& rsp){
+                // create responder obj
+                Responder responder(rsp);
+                // try parse request (should be JSON)
                 json j;
                 try {
                     j = json::parse(req.body);
                 } catch(const json::parse_error&) {
-                    send_error_response(res, 400, "Failed to parse request: Please submit valid data!");
+                    responder.sendErrorResponse(400, "Failed to parse request: Please submit valid data!");
+                    return;
                 }
                 catch (const std::exception& e) {
-                    send_error_response(res, 500, "Failed to parse request: Something went wrong!");
+                    responder.sendErrorResponse(500, "Failed to parse request: Something went wrong!");
+                    return;
                 }
-                // sanitize JSON input
-                sanitize_request(j);
+                // sanitize request (JSON input)
+                security::sanitizeJSON(j);
                 // error if nothing in JSON
-                if (j.empty())
-                    send_error_response(res, 400, "Failed to parse request: Request is empty. Please submit (valid) data!");
+                if ( j.empty() ) {
+                    responder.sendErrorResponse(400, "Failed to parse request: Request is empty. Please submit (valid) data!");
+                    return;
+                }
                 // print JSON input
                 #ifdef SERVER_DEBUG
-                cout << "*** Received JSON ***" << endl;
-                print_json(j);
+                cout << "*** Sanitized JSON ***" << endl;
+                cout << j.dump(1, ' ') << endl;
                 #endif
                 // produce and send response
-                controllers::respond(j, res);
+                controllers::respond(j, responder);
             });
 
 

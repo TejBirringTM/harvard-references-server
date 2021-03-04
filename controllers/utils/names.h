@@ -6,7 +6,7 @@
 namespace utils::names {
 
 
-// private stuff
+    // private stuff
     namespace {
         using StringArray = std::vector<std::string>;
     }

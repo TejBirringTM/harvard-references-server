@@ -1,6 +1,5 @@
 #include "controllers.h"
-#include "../includes/utils.h"
-#include "error.h"
+#include "_error.h"
 // type handlers defined here!
 #include "typeHandlers/typeHandlers.h"
 // namespaces
@@ -36,19 +35,21 @@ inline std::string get_reference_result(nlohmann::json& refObj) {
 
 
 
-inline void handle_object(nlohmann::json& req, crow::response& res) {
+inline void handle_object(nlohmann::json& req, Responder& responder) {
     const std::string htmlRefStr = get_reference_result(req);
 
-    send_response(res,json({
-                                   {"string", "Not implemented yet."},
-                                   {"html", htmlRefStr}
-    }));
+    responder.sendResponse(
+            json({
+                         {"string", "Not implemented yet."},
+                         {"html", htmlRefStr}
+            })
+    );
 }
 
 
 
 
-inline void handle_array(nlohmann::json& req, crow::response& res) {
+inline void handle_array(nlohmann::json& req, Responder& responder) {
     if (req.size() > 50)
         throw ControllerError("Maximum number of references per request exceeded! Maximum number of references allowed is 50.");
 
@@ -67,29 +68,29 @@ inline void handle_array(nlohmann::json& req, crow::response& res) {
         });
     }
 
-    send_response(res, results );
+    responder.sendResponse(results);
 }
 
 
 
 
-void controllers::respond(nlohmann::json& req, crow::response& res) {
+void controllers::respond(nlohmann::json& request, Responder& responder) {
     try {
-        if (req.is_object())
-            handle_object(req, res);
-        else if (req.is_array())
-            handle_array(req, res);
+        if (request.is_object())
+            handle_object(request, responder);
+        else if (request.is_array())
+            handle_array(request, responder);
         else
             throw ControllerError("Request is of the wrong format! Request be an (reference) 'object' or 'array' (of reference 'objects').");
     }
     catch (const ControllerError& e) {
-        send_error_response(res, 400, e.what());
+        responder.sendErrorResponse(400, e.what());
     }
     catch (const SchemaError& e) {
-        send_error_response(res, 400, e.what());
+        responder.sendErrorResponse(400, e.what());
     }
     catch (const std::exception& e) {
         cerr << e.what() << endl;
-        send_error_response(res, 500, "Something went wrong!");
+        responder.sendErrorResponse(500, "Something went wrong!");
     }
 }

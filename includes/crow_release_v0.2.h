@@ -9657,7 +9657,7 @@ namespace crow
 
         void complete_request()
         {
-            CROW_LOG_INFO << "Response: " << this << ' ' << req_.raw_url << ' ' << res.code << ' ' << close_connection_;
+            //CROW_LOG_INFO << "Response: " << this << ' ' << req_.raw_url << ' ' << res.code << ' ' << close_connection_;
 
             if (need_to_call_after_handlers_)
             {
@@ -9670,15 +9670,17 @@ namespace crow
                     decltype(*middlewares_)>
                 (*middlewares_, ctx_, req_, res);
             }
-           prepare_buffers();
+
+            prepare_buffers();
+
             CROW_LOG_INFO << "Response: " << this << ' ' << req_.raw_url << ' ' << res.code << ' ' << close_connection_;
+
             if (res.file_info.path.size())
             {
                 do_write_static();
             }else {
                 do_write_general();
             }
-
         }
 
     private:
