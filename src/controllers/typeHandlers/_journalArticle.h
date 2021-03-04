@@ -1,5 +1,5 @@
 #pragma once
-#include "typeHandler.h"
+#include "_typeHandler.h"
 #include "../../schema/schema.h"
 #include "../utils/utils.h"
 inline constexpr const ReferenceTypeHandler journalArticle {

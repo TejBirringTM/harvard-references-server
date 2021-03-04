@@ -1,14 +1,14 @@
 #pragma once
-#include "typeHandler.h"
+#include "_typeHandler.h"
 
 
 // include handlers
-#include "book.h"
-#include "bookChapter.h"
-#include "conferenceProceeding.h"
-#include "journalArticle.h"
-#include "webpage.h"
-#include "website.h"
+#include "_book.h"
+#include "_bookChapter.h"
+#include "_conferenceProceeding.h"
+#include "_journalArticle.h"
+#include "_webpage.h"
+#include "_website.h"
 
 
 // list handlers
