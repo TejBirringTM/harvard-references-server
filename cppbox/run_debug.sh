@@ -18,5 +18,4 @@ docker run \
 -p 7776:22 \
 -p 7777:7777 \
 -e PORT=8080 \
--e SERVER_DEBUG=1 \
 -ti cppbox:latest bash
