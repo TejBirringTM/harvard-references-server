@@ -1,11 +1,10 @@
-#ifndef HARVARD_REFERENCES_SERVER_UTILS_H
-#define HARVARD_REFERENCES_SERVER_UTILS_H
+#pragma once
 #include <unordered_map>
 #include <string>
 #include <iostream>
 #include <regex>
 #include "json.h"
-#include "crow_all.h"
+#include "crow_release_v0.2.h"
 #include <functional>
 
 inline void print_json(const nlohmann::json& json) {
@@ -68,4 +67,3 @@ inline void sanitize_request(nlohmann::json& json) {
         }
     });
 }
-#endif //HARVARD_REFERENCES_SERVER_UTILS_H
