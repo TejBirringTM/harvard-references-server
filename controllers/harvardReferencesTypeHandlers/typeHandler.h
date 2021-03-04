@@ -1,7 +1,6 @@
-#ifndef HARVARD_REFERENCES_SERVER_TYPEHANDLER_H
-#define HARVARD_REFERENCES_SERVER_TYPEHANDLER_H
+#pragma once
 #include "../../schema/field.h"
-#include "verifyFields.h"
+#include "../../schema/verifyFields.h"
 #include <iostream>
 
 
@@ -19,7 +18,7 @@ struct ReferenceTypeHandler {
         #ifdef SERVER_DEBUG
         std::cout << "  Verifying fields..." << std::endl;
         #endif
-        verifyFields(req, fields);
+        schema::fields::verifyFields(req, fields);
 
         #ifdef SERVER_DEBUG
         std::cout << "  Running producer funct..." << std::endl;
@@ -29,4 +28,3 @@ struct ReferenceTypeHandler {
 
 
 };
-#endif //HARVARD_REFERENCES_SERVER_TYPEHANDLER_H

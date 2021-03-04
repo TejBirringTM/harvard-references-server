@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_HTML_H
-#define HARVARD_REFERENCES_SERVER_HTML_H
+#pragma once
 #include <string>
 #include <string_view>
 namespace utils::html {
@@ -41,4 +40,3 @@ namespace utils::html {
 
 
 }
-#endif //HARVARD_REFERENCES_SERVER_HTML_H

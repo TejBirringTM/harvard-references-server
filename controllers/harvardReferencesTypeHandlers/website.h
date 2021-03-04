@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_WEBSITE_H
-#define HARVARD_REFERENCES_SERVER_WEBSITE_H
+#pragma once
 #include "typeHandler.h"
 #include "../../schema/fields.h"
 #include "../utils/utils.h"
@@ -58,4 +57,3 @@ inline constexpr const ReferenceTypeHandler website {
             return oHtml.str();
         }
 };
-#endif //HARVARD_REFERENCES_SERVER_WEBSITE_H

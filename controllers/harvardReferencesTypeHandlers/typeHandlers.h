@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_TYPEHANDLERS_H
-#define HARVARD_REFERENCES_SERVER_TYPEHANDLERS_H
+#pragma once
 #include "typeHandler.h"
 #include <map>
 #include <memory>
@@ -23,8 +22,3 @@ constexpr const std::array<const ReferenceTypeHandler, 6> handlers {
     webpage,
     website
 };
-
-
-
-
-#endif //HARVARD_REFERENCES_SERVER_TYPEHANDLERS_H

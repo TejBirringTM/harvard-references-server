@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_NAMES_H
-#define HARVARD_REFERENCES_SERVER_NAMES_H
+#pragma once
 #include <vector>
 #include <string>
 #include <iostream>
@@ -119,7 +118,4 @@ namespace utils::names {
     }
 
 
-
-
 }
-#endif //HARVARD_REFERENCES_SERVER_NAMES_H

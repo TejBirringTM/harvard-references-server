@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
-#define HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H
+#pragma once
 #include "typeHandler.h"
 #include "../../schema/fields.h"
 #include "../utils/utils.h"
@@ -112,4 +111,3 @@ inline constexpr const ReferenceTypeHandler bookChapter {
             return oHtml.str();
         }
 };
-#endif //HARVARD_REFERENCES_SERVER_BOOKCHAPTER_H

@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_ERRORS_H
-#define HARVARD_REFERENCES_SERVER_ERRORS_H
+#pragma once
 #include <exception>
 #include <string>
 #include <functional>
@@ -58,4 +57,3 @@ public:
     runtime_error(what)
     {}
 };
-#endif //HARVARD_REFERENCES_SERVER_ERRORS_H

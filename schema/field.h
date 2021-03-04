@@ -1,33 +1,32 @@
-#ifndef HARVARD_REFERENCES_SERVER_FIELD_H
-#define HARVARD_REFERENCES_SERVER_FIELD_H
+#pragma once
 #include <string_view>
 #include <array>
 #include "../includes/json.h"
-
 namespace schema {
-    using type_t = nlohmann::json::value_t;
-    inline std::string to_string(const nlohmann::json::value_t type) noexcept
+    using ValType = nlohmann::json::value_t;
+    inline std::string toString(const ValType type) noexcept
     {
-        using value_t = nlohmann::json::value_t;
         {
             switch (type)
             {
-                case value_t::null:
+                case ValType::null:
                     return "null";
-                case value_t::object:
+                case ValType::object:
                     return "object";
-                case value_t::array:
+                case ValType::array:
                     return "array";
-                case value_t::string:
+                case ValType::string:
                     return "string";
-                case value_t::boolean:
+                case ValType::boolean:
                     return "boolean";
-                case value_t::binary:
+                case ValType::binary:
                     return "binary";
-                case value_t::discarded:
+                case ValType::discarded:
                     return "discarded";
-                default:
+                case ValType::number_unsigned:
                     return "number";
+                default:
+                    return "unknown";
             }
         }
     }
@@ -51,7 +50,7 @@ namespace schema {
     struct ArrayRules {
         unsigned _minLength;
         unsigned _maxLength;
-        type_t _innerType;
+        ValType _innerType;
         ArrayElementRules _innerRules;
     };
 
@@ -63,7 +62,7 @@ namespace schema {
 
     struct Field {
         std::string_view _name;
-        type_t _type;
+        ValType _type;
         bool _required;
         std::array<std::string_view, 10> _requiredIfPresent;
         std::array<std::string_view, 10> _requiredIfEmpty;
@@ -127,4 +126,3 @@ namespace schema {
     inline constexpr const char* REGEX_URL = R"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))";
     inline constexpr const char* REGEX_DATE = R"((\d\d\d\d)-(0?1|0?2|0?3|0?4|0?5|0?6|0?7|0?8|0?9|10|11|12)-(0[1-9]|[12][0-9]|3[01]))";
 }
-#endif //HARVARD_REFERENCES_SERVER_FIELD_H

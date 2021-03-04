@@ -1,9 +1,8 @@
-#ifndef HARVARD_REFERENCES_SERVER_HARVARD_REFERENCES_H
-#define HARVARD_REFERENCES_SERVER_HARVARD_REFERENCES_H
+#pragma once
 #include "../includes/crow_all.h"
 #include "../includes/json.h"
 #include "../schema/fields.h"
-#include "harvardReferencesTypeHandlers/verifyFields.h"
+#include "../schema/verifyFields.h"
 #include <string_view>
 #include <functional>
 #include <iostream>
@@ -15,4 +14,3 @@ namespace controllers {
     }
     
 }
-#endif //HARVARD_REFERENCES_SERVER_HARVARD_REFERENCES_H

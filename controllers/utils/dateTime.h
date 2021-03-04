@@ -1,5 +1,4 @@
-#ifndef HARVARD_REFERENCES_SERVER_DATETIME_H
-#define HARVARD_REFERENCES_SERVER_DATETIME_H
+#pragma onoce
 #include "../../schema/field.h"
 #include "boost/regex.hpp"
 #include "html.h"
@@ -120,4 +119,3 @@ namespace utils::dateTime {
 
 
 }
-#endif //HARVARD_REFERENCES_SERVER_DATETIME_H
