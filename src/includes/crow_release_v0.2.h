@@ -9605,6 +9605,10 @@ namespace crow
                     is_invalid_request = true;
                     res = response(400);
                 }
+                if (method_name(req.method)=="invalid") {
+                    is_invalid_request = true;
+                    res = response(405);
+                }
 				if (parser_.is_upgrade())
 				{
 					if (req.get_header_value("upgrade") == "h2c")
