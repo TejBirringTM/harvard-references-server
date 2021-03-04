@@ -54,6 +54,16 @@ int main(int nArgs, char* vectorArgs[]) {
             });
 
 
+    CROW_ROUTE(app, "/api/v1.0").methods(HTTPMethod::OPTIONS)
+            ([](const request& req, response& rsp){
+                // create responder obj
+                Responder responder(rsp);
+                responder.sendResponse(json{
+                        {"message", "This is a response from the OPTIONS handler!"}
+                });
+            });
+
+
     // get specified port
     char* _port = getenv("PORT");
     unsigned port = static_cast<unsigned>( _port != nullptr ? stoul(_port) : 8080 );
