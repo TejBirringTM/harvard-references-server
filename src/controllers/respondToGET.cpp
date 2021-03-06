@@ -73,7 +73,7 @@ inline void handle_array(nlohmann::json& req, Responder& responder) {
 
 
 
-void controllers::respond(nlohmann::json& request, Responder& responder) {
+void controllers::respondToGET(nlohmann::json& request, Responder& responder) {
     try {
         if (request.is_object())
             handle_object(request, responder);

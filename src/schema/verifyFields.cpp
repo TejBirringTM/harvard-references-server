@@ -124,7 +124,7 @@ void schema::fields::verifyFields(nlohmann::json &req, const Schema& schema) {
 
     for (const Field &field : schema) {
         // ignore if this is not a valid, initialized field.
-        if (field.uninitialized()) continue;
+        if (!field) continue;
         // else:
         #ifdef SERVER_DEBUG
         cout << "       Verifying field: '" << field._name << "'" << endl;

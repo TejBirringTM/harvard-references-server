@@ -3,7 +3,6 @@
 #include "security/security.h"
 #include "responder.h"
 
-
 int main(int nArgs, char* vectorArgs[]) {
     using namespace std;
     using namespace crow;
@@ -50,7 +49,7 @@ int main(int nArgs, char* vectorArgs[]) {
                 cout << j.dump(1, ' ') << endl;
                 #endif
                 // produce and send response
-                controllers::respond(j, responder);
+                controllers::respondToGET(j, responder);
             });
 
 
@@ -67,6 +66,17 @@ int main(int nArgs, char* vectorArgs[]) {
     // get specified port
     char* _port = getenv("PORT");
     unsigned port = static_cast<unsigned>( _port != nullptr ? stoul(_port) : 8080 );
+
+
+    // initialize stuff here,
+    // e.g. prepare static content.
+    try {
+        controllers::initialize();
+    }
+    catch (const std::exception& e) {
+        cout << "Failed to initialize the server!";
+        exit(EXIT_FAILURE);
+    }
 
 
     // run server

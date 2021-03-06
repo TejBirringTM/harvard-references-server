@@ -1,12 +1,14 @@
 # PRODUCTION variant
 add_library(
         harvard-references-server-controllers
-        controllers.cpp
+        respondToGET.cpp
+        initialize.cpp
 )
 
 # DEBUG variant
 add_library(
         harvard-references-server-controllers-debug
-        controllers.cpp
+        respondToGET.cpp
+        initialize.cpp
 )
 target_compile_definitions(harvard-references-server-controllers-debug PRIVATE SERVER_DEBUG=1)

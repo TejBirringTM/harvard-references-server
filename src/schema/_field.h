@@ -128,8 +128,8 @@ namespace schema {
             return f;
         }
 
-        constexpr bool uninitialized() const {
-            return (_name.empty());
+        constexpr operator bool() const {
+            return (!_name.empty());
         }
     };
 

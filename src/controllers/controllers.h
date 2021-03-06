@@ -4,5 +4,8 @@
 #include "_error.h"
 
 namespace controllers {
-        void respond(nlohmann::json &request, Responder &responder);
+        inline bool initialized;
+        void initialize();
+        void respondToGET(nlohmann::json &request, Responder &responder);
+        void respondToOPTIONS(Responder& responder);
 }

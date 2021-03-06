@@ -4,21 +4,21 @@
 namespace utils::html {
 
 
-    constexpr const char* em = "<em>";
-    constexpr const char* _em = "</em>";
-    constexpr const char* sup = "<sup>";
-    constexpr const char* _sup = "</sup>";
+    inline constexpr const char* em = "<em>";
+    inline constexpr const char* _em = "</em>";
+    inline constexpr const char* sup = "<sup>";
+    inline constexpr const char* _sup = "</sup>";
 
 
-    std::string str(const std::string& in) { return in; }
+    inline std::string str(const std::string& in) { return in; }
 
 
-    std::string lnk(const std::string& url) {
+    inline std::string lnk(const std::string& url) {
         return "<a href='" + url + "' target='_blank' rel='noreferrer noopener nofollow'>" + url + "</a>";
     }
 
 
-    std::string ord(const unsigned n) {
+    inline std::string ord(const unsigned n) {
         const unsigned j = n % 10;
         const unsigned k = n % 100;
 
