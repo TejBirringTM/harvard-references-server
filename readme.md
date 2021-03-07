@@ -1,4 +1,4 @@
-# Harvard References Server
+# Harvard References Server #
 A (high-performance) C++ based HTTP server that implements a RESTful API which generates  
 (plain-text or HTML-formatted) Harvard-style citations, references, and bibliographies, 
 for a myriad types of sources: books, journal articles, conference proceedings, videos, etc.
@@ -8,8 +8,8 @@ citations, references, and bibliographies. Useful for projects that
 have to deal with managing or listing academic sources.
 
 ---
-### Features
 
+### Features ### 
 This codebase is still 'work-in-progress'. 
 The following reference features have been implemented:
 
@@ -36,6 +36,7 @@ The following features need to be developed:
 * Generate HTML-formatted bibliographies.
 
 ---
+
 ### Testing ###
 You can test the current de-facto release (versioning system has not been implemented yet) using the following information:
 
