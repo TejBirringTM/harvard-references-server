@@ -7,8 +7,13 @@ The motivation behind the project was to enable apps to present (research) artic
 citations, references, and bibliographies. Useful for projects that 
 have to deal with managing or listing academic sources.
 
-This codebase is still work-in-progress, the following features have been implemented:
-* Generate HTML-formatted references for:
+---
+### Features
+
+This codebase is still 'work-in-progress'. 
+The following reference features have been implemented:
+
+* Generate HTML-formatted reference strings for:
   * Books
   * Book Chapters
   * Journal Articles
@@ -17,8 +22,7 @@ This codebase is still work-in-progress, the following features have been implem
   * Webpages
 
 The following features need to be developed:
-* Generate HTML-formatted citation strings.
-* Add support for reference types:
+* Generate HTML-formatted reference strings for:
   * Videos
   * Podcasts
   * Music
@@ -28,6 +32,8 @@ The following features need to be developed:
   * Maps
   * Interviews/Correspondences
   * Newspaper/Magazine Articles
+* Generate HTML-formatted citation strings.
+* Generate HTML-formatted bibliographies.
 
 ---
 ### Testing ###
