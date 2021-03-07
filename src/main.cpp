@@ -57,9 +57,8 @@ int main(int nArgs, char* vectorArgs[]) {
             ([](const request& req, response& rsp){
                 // create responder obj
                 Responder responder(rsp);
-                responder.sendResponse(json{
-                        {"message", "This is a response from the OPTIONS handler!"}
-                });
+                // send response
+                controllers::respondToOPTIONS(responder);
             });
 
 

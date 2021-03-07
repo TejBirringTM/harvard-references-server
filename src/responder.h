@@ -18,13 +18,13 @@ public:
     void sendErrorResponse(int errorCode, const std::string &errorMessage) {
         response.code = errorCode;
         response.set_header("Content-Type", "text/json");
-        response.json_value["message"] = errorMessage;
+        response.json_value["message"] = std::move(errorMessage);
         response.end();
     }
 
     void sendResponse(const nlohmann::json &data) {
         response.set_header("Content-Type", "text/json");
-        response.body = data.dump();
+        response.body = std::move(data.dump());
         response.end();
     }
 };

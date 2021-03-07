@@ -10,7 +10,7 @@ namespace utils::html {
     inline constexpr const char* _sup = "</sup>";
 
 
-    inline std::string str(const std::string& in) { return in; }
+    inline const std::string& str(const std::string& in) { return in; }
 
 
     inline std::string lnk(const std::string& url) {

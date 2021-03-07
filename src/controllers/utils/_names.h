@@ -88,7 +88,7 @@ namespace utils::names {
             retVal.push_back(reverseAbbreviatedName(name));
         }
 
-        return retVal;
+        return std::move(retVal);
     }
 
 
@@ -99,7 +99,7 @@ namespace utils::names {
             retVal.push_back(abbreviatedName(name));
         }
 
-        return retVal;
+        return std::move(retVal);
     }
 
 

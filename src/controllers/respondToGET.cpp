@@ -28,7 +28,7 @@ inline std::string get_reference_result(nlohmann::json& refObj) {
     if (it == handlers.cend())
         throw ControllerError("Reference 'type' not recognized!");
 
-    return it->handle(refObj);
+    return std::move( it->handle(refObj) );
 }
 
 
@@ -40,7 +40,7 @@ inline void handle_object(nlohmann::json& req, Responder& responder) {
     responder.sendResponse(
             json({
                          {"string", "Not implemented yet."},
-                         {"html", htmlRefStr}
+                         {"html", std::move(htmlRefStr)}
             })
     );
 }

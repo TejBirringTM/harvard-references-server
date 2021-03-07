@@ -1,40 +1,25 @@
 #include "controllers.h"
 #include "typeHandlers/typeHandlers.h"
 #include <algorithm>
-#include "../includes/json.h"
 
-template<typename T, size_t N, typename M>
-std::vector<T> exclude(const std::array<T,N>& in, const M valToExclude) {
-    using namespace std;
-    vector<T> ret;
-    for_each(in.cbegin(), in.cend(), [&ret, &valToExclude](const T& el){
-        if (el != valToExclude)
-            ret.push_back(el);
-    });
-    return ret;
-}
+
 
 void handlerToJSON(nlohmann::json& j, const ReferenceTypeHandler& handler) {
     using namespace std;
     using namespace nlohmann;
     using namespace schema;
-    // fill json with info about this reference type:
-    // 1.
-    json val;
+    // 1. fill json with info about this reference type:
+    std::vector<json> val;
     for_each(handler.schema.cbegin(), handler.schema.cend(),
         [&val](const Field& f){
-            val[string(f._name)] = {
-                    {"type", toString(f._type)},
-                    {"required", f._required},
-                    {"requiredIfPresent", exclude( f._requiredIfPresent, "" )},
-                    {"requiredIfEmpty", exclude( f._requiredIfEmpty, "" )},
-//                    {"validationRules", f._rules} // fix!
-            };
+            if (!f) return;
+            val.push_back(f.toJSON());
         }
     );
     // 2. put in place, key associated with 'type'.
-    j[string(handler.type)] = val;
+    j[string(handler.type)] = std::move(val);
 }
+
 
 void produceOPTIONSResponse() {
     using namespace std;
@@ -47,10 +32,13 @@ void produceOPTIONSResponse() {
             handlerToJSON(j, handler);
         }
     );
+    controllers::OPTIONS = std::move(j);
     // debug dump
     #ifdef SERVER_DEBUG
-    cout << j.dump() << endl;
+    cout << "Schema: " << endl;
+    cout << controllers::OPTIONS << endl;
     #endif
+
 }
 
 
@@ -60,6 +48,6 @@ void controllers::initialize() {
     produceOPTIONSResponse();
     // print
     #ifdef SERVER_DEBUG
-    cout << "initialized!" << endl;
+    cout << "Initialized!" << endl;
     #endif
 }

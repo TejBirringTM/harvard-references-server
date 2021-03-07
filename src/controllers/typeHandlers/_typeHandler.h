@@ -5,9 +5,8 @@
 
 struct ReferenceTypeHandler {
     const std::string_view type;
-    schema::Schema schema;
+    const schema::Schema schema;
     std::string (*const producer)(nlohmann::json& req);
-
 
     std::string handle(nlohmann::json& req) const {
         #ifdef SERVER_DEBUG
@@ -22,8 +21,6 @@ struct ReferenceTypeHandler {
         #ifdef SERVER_DEBUG
         std::cout << "  Running producer funct..." << std::endl;
         #endif
-        return (*producer)(req);
+        return std::move( (*producer)(req) );
     }
-
-
 };

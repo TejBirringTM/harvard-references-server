@@ -12,7 +12,7 @@
 
 
 // list handlers
-constexpr const std::array<const ReferenceTypeHandler, 6> handlers {
+inline constexpr const std::array<const ReferenceTypeHandler, 6> handlers {
     book,
     bookChapter,
     conferenceProceeding,

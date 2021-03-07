@@ -33,7 +33,7 @@ void security::sanitizeJSON(nlohmann::json& json) {
                 #ifdef SERVER_DEBUG
                 cout << "Sanitized: '" << input << "' -> '" << output << "'" << endl;
                 #endif
-                return output;
+                return std::move( output );
             };
 
     recursiveIterateJSON(json, [](json::iterator it) {

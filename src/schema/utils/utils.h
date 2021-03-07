@@ -27,7 +27,7 @@ std::string listFields(const std::array<std::string_view, N>& fields) {
     tmp = boost::regex_replace(tmp, boost::regex(R"((^))"), "'");
     tmp = boost::regex_replace(tmp, boost::regex(R"((, ))"), "', '");
     tmp = boost::regex_replace(tmp, boost::regex(R"(($))"), "'");
-    return tmp;
+    return std::move( tmp );
 }
 
 
@@ -43,5 +43,17 @@ std::string listFields(const std::string_view& field, const std::array<std::stri
     tmp = boost::regex_replace(tmp, boost::regex(R"((^))"), "'");
     tmp = boost::regex_replace(tmp, boost::regex(R"((, ))"), "', '");
     tmp = boost::regex_replace(tmp, boost::regex(R"(($))"), "'");
-    return tmp;
+    return std::move( tmp );
+}
+
+
+template<typename T, size_t N, typename M>
+std::vector<T> exclude(const std::array<T,N>& in, const M valToExclude) {
+    using namespace std;
+    vector<T> ret;
+    for_each(in.cbegin(), in.cend(), [&ret, &valToExclude](const T& el){
+        if (el != valToExclude)
+            ret.push_back(el);
+    });
+    return std::move( ret );
 }
